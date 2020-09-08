@@ -7,6 +7,12 @@ using graphics::Point
 **
 ** Button is a widget that invokes an action when pressed.
 **
+**   html:
+**   <button class="appkit-button"/>
+** 
+**   slim:
+**   button.appkit-button
+** 
 ** - domkit 1.0.75
 ** 
 @Js class Button {
@@ -22,13 +28,14 @@ using graphics::Point
 		init()
 	}
 
-	static new fromSelector(Str selector) {
+	static new fromSelector(Str selector, Bool checked := true) {
 		elem := Win.cur.doc.querySelector(selector)
-		if (elem == null) throw Err("Could not find Button: ${selector}")
+		if (elem == null && checked) throw Err("Could not find Button: ${selector}")
 		return fromElem(elem)
 	}
 	
-	static new fromElem(Elem elem) {
+	static new fromElem(Elem? elem) {
+		if (elem == null) return null
 		if (elem.prop(Button#.qname) == null)
 			elem.setProp(Button#.qname, Button._make(elem))
 		return elem.prop(Button#.qname)
@@ -65,6 +72,7 @@ using graphics::Point
 			if (!enabled) return
 			_event = e
 			if (e.key == Key.space) {
+			// FIXME ListButton
 //			if (e.key == Key.space || (this is ListButton && e.key == Key.down)) {
 				doMouseDown
 				if (cbPopup == null) Win.cur.setTimeout(100ms) |->| { fireAction(e); doMouseUp }
@@ -118,13 +126,14 @@ using graphics::Point
 		// use internal _onClose to keep onClose available for use
 		popup._onClose {
 			showUp
+			// FIXME Combo
 //			if (isCombo) ((Combo)this.parent).field.focus
 //			else this.focus
 		}
 
 		// limit width to button size if not explicity set
-		if (popup.style.effective("min-width") == null)
-			popup.style->minWidth = "${w}px"
+		if (popup.elem.style.effective("min-width") == null)
+			popup.elem.style->minWidth = "${w}px"
 
 		popup.open(x, y)
 	}
@@ -149,8 +158,8 @@ using graphics::Point
 
 	internal Void showDown() { elem.style.addClass("down") }
 	internal Void showUp()	 { elem.style.removeClass("down") }
-	internal virtual Void doMouseDown() { showDown }
-	internal virtual Void doMouseUp()	 { showUp }
+	internal virtual Void doMouseDown()	{ showDown }
+	internal virtual Void doMouseUp()	{ showUp }
 	internal Bool mouseDown := false
 
 	private Void fireAction(Event e) {

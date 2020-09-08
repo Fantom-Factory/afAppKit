@@ -15,13 +15,14 @@ using dom
 			throw ArgErr("Elem not an anchor: ${elem.html}")
 	}
 
-	static new fromSelector(Str selector) {
+	static new fromSelector(Str selector, Bool checked := true) {
 		elem := Win.cur.doc.querySelector(selector)
-		if (elem == null) throw Err("Could not find Link: ${selector}")
+		if (elem == null && checked) throw Err("Could not find Link: ${selector}")
 		return fromElem(elem)
 	}
 	
-	static new fromElem(Elem elem) {
+	static new fromElem(Elem? elem) {
+		if (elem == null) return null
 		if (elem.prop(Link#.qname) == null)
 			elem.setProp(Link#.qname, Link._make(elem))
 		return elem.prop(Link#.qname)

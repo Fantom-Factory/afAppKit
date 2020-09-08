@@ -4,28 +4,42 @@ using dom::Win
 
 @Js class AppInit {
 
-	private ErrHandler	errHandler	:= ErrHandler()
-
 	** This is the main entry point to the Js App
-	Void init(Type appType, Str:Obj? config) {
-		try doInit(appType, config)
+	virtual Void init(Type appType, Str:Obj? config) {
+		iocObjs		:= iocObjs
+		errHandler	:= iocObjs[ErrHandler#] as ErrHandler
+		if (errHandler == null) {
+			iocObjs		= iocObjs.rw.set(ErrHandler#, ErrHandler())
+			errHandler	= iocObjs[ErrHandler#]
+		}
+
+		try doInit(appType, iocObjs, config)
 		catch (Err cause) {
 			errHandler.log.err("Could not initialise page")
 			errHandler.onError(cause)
 		}
 	}
 
-	Void doInit(Type appType, Str:Obj? config) {
+	** Hook to pre-configure the IoC with ready-made objects
+	virtual Type:Obj iocObjs() {
+		Type:Obj?[
+			ErrHandler#	: ErrHandler()
+		]
+	}
+
+	@NoDoc
+	Void doInit(Type appType, Type:Obj iocObjs, Str:Obj? config) {
 		appNom := config["appName"	 ]?.toStr ?: AppInit#.pod.name
 		appVer := config["appVersion"]?.toStr ?: AppInit#.pod.version.toStr
 		logLogo(appNom, appVer)
 
-		injector := MiniIoc(null, config)
+		injector := MiniIoc(iocObjs, config)
 		appPage  := injector.build(appType)
 		appPage.typeof.method("init", false)?.callOn(appPage, null)
 	}
 
-	private Void logLogo(Str name, Str ver) {
+	
+	Void logLogo(Str name, Str ver) {
 		tag  := "powers ${name} v${ver}"
 		logo := Str<|   _____         __               _____        __                
 		               / ___/_  _____/ /_____ ______  / ___/_  ____/ /_________  __ __

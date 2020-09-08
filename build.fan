@@ -14,7 +14,11 @@ class Build : BuildPod {
 		depends = [
 			// ---- Fantom Core -----------------
 			"sys        1.0.73 - 1.0",
+			"concurrent 1.0.73 - 1.0",
+
+			// ---- Fantom Web ------------------
 			"dom        1.0.73 - 1.0",
+			"graphics   1.0.73 - 1.0",
 		]
 
 		srcDirs = [`fan/`, `fan/appkit/`, `fan/core/`, `fan/util/`]
