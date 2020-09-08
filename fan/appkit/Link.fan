@@ -1,9 +1,8 @@
-using dom
+using dom::Elem
 
 **
 ** Hyperlink anchor element
 **
-** - domkit 1.0.75
 @Js class Link {
 
 	Elem elem { private set }
@@ -16,16 +15,11 @@ using dom
 	}
 
 	static new fromSelector(Str selector, Bool checked := true) {
-		elem := Win.cur.doc.querySelector(selector)
-		if (elem == null && checked) throw Err("Could not find Link: ${selector}")
-		return fromElem(elem)
+		AppElem.fromSelector(selector, Link#, checked)
 	}
 	
-	static new fromElem(Elem? elem) {
-		if (elem == null) return null
-		if (elem.prop(Link#.qname) == null)
-			elem.setProp(Link#.qname, Link._make(elem))
-		return elem.prop(Link#.qname)
+	static new fromElem(Elem? elem, Bool checked := true) {
+		AppElem.fromElem(elem, Link#, checked)
 	}
 
 	** The target attribute specifies where to open the linked document.

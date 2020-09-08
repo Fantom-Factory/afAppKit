@@ -13,8 +13,6 @@ using graphics::Point
 **   slim:
 **   button.appkit-button
 ** 
-** - domkit 1.0.75
-** 
 @Js class Button {
 
 	Elem elem { private set }
@@ -29,19 +27,16 @@ using graphics::Point
 	}
 
 	static new fromSelector(Str selector, Bool checked := true) {
-		elem := Win.cur.doc.querySelector(selector)
-		if (elem == null && checked) throw Err("Could not find Button: ${selector}")
-		return fromElem(elem)
+		AppElem.fromSelector(selector, Button#, checked)
 	}
 	
-	static new fromElem(Elem? elem) {
-		if (elem == null) return null
-		if (elem.prop(Button#.qname) == null)
-			elem.setProp(Button#.qname, Button._make(elem))
-		return elem.prop(Button#.qname)
+	static new fromElem(Elem? elem, Bool checked := true) {
+		AppElem.fromElem(elem, Button#, checked)
 	}
 	
 	private Void init() {
+		elem.style.addClass("appkit-control appkit-control-button appkit-button")
+		
 		elem.onEvent("mousedown", false) |e| {
 			e.stop
 			if (!enabled) return
@@ -72,7 +67,7 @@ using graphics::Point
 			if (!enabled) return
 			_event = e
 			if (e.key == Key.space) {
-			// FIXME ListButton
+			// TODO ListButton
 //			if (e.key == Key.space || (this is ListButton && e.key == Key.down)) {
 				doMouseDown
 				if (cbPopup == null) Win.cur.setTimeout(100ms) |->| { fireAction(e); doMouseUp }
@@ -93,8 +88,8 @@ using graphics::Point
 	** Offset to apply to default origin for `onPopup`.
 	@NoDoc Point popupOffset := Point.defVal
 
-// TODO: how should this work?
-// TODO: something like onLazyPopup work better?
+// todo: how should this work?
+// todo: something like onLazyPopup work better?
 	** Remove existing popup callback.
 	@NoDoc Void removeOnPopup() { this.cbPopup = null }
 
@@ -119,14 +114,14 @@ using graphics::Point
 
 		// adjust popup origin if haligned
 		switch (popup.halign) {
-			case Align.center: x += w / 2
-			case Align.right:	x += w
+			case Align.center	: x += w / 2
+			case Align.right	: x += w
 		}
 
 		// use internal _onClose to keep onClose available for use
 		popup._onClose {
 			showUp
-			// FIXME Combo
+			// TODO Combo
 //			if (isCombo) ((Combo)this.parent).field.focus
 //			else this.focus
 		}

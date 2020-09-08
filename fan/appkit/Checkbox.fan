@@ -1,9 +1,9 @@
-using dom
+using dom::Elem
+using dom::Event
 
 **
 ** Checkbox displays a checkbox that can be toggled on and off.
 **
-** - domkit 1.0.75
 @Js class Checkbox {
 
 	Elem elem { private set }
@@ -18,19 +18,16 @@ using dom
 	}
 
 	static new fromSelector(Str selector, Bool checked := true) {
-		elem := Win.cur.doc.querySelector(selector)
-		if (elem == null && checked) throw Err("Could not find Checkbox: ${selector}")
-		return fromElem(elem)
+		AppElem.fromSelector(selector, Checkbox#, checked)
 	}
 	
-	static new fromElem(Elem? elem) {
-		if (elem == null) return null
-		if (elem.prop(Checkbox#.qname) == null)
-			elem.setProp(Checkbox#.qname, Checkbox._make(elem))
-		return elem.prop(Checkbox#.qname)
+	static new fromElem(Elem? elem, Bool checked := true) {
+		AppElem.fromElem(elem, Checkbox#, checked)
 	}
 
 	private Void init() {
+		elem.style.addClass("appkit-checkbox")
+		
 		elem.onEvent("change", false) |e| {
 			fireAction(e)
 		}

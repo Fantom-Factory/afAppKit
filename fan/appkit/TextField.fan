@@ -1,9 +1,10 @@
-using dom
+using dom::Elem
+using dom::Event
+using dom::Key
 
 **
 ** Text field input element.
 **
-** - domkit 1.0.75
 @Js class TextField {
 
 	Elem elem { private set }
@@ -19,29 +20,26 @@ using dom
 	}
 
 	static new fromSelector(Str selector, Bool checked := true) {
-		elem := Win.cur.doc.querySelector(selector)
-		if (elem == null && checked) throw Err("Could not find TextField: ${selector}")
-		return fromElem(elem)
+		AppElem.fromSelector(selector, TextField#, checked)
 	}
 	
-	static new fromElem(Elem? elem) {
-		if (elem == null) return null
-		if (elem.prop(TextField#.qname) == null)
-			elem.setProp(TextField#.qname, TextField._make(elem))
-		return elem.prop(TextField#.qname)
+	static new fromElem(Elem? elem, Bool checked := true) {
+		AppElem.fromElem(elem, TextField#, checked)
 	}
 
 	private Void init() {
+		elem.style.addClass("appkit-control appkit-control-text appkit-textfield")
+
 		elem.onEvent("input", false) |e| {
 			checkUpdate
 			fireModify(e)
 		}
-		
+
 		elem.onEvent("keydown", false) |e| {
 			if (e.key == Key.enter) fireAction(e)
 		}
 	}
-	
+
 	** The enabled attribute.
 	Bool enabled {
 		get { elem->disabled->not }
@@ -56,7 +54,7 @@ using dom
 			}
 		}
 	}
-	
+
 	** Preferred width of field in columns, or 'null' for default.
 	** (Only applicable for TextAreas)
 	Int? cols {
@@ -116,6 +114,7 @@ using dom
 
 	// framework use only
 	private Void checkUpdate() {
+		// TODO Combo
 //		if (parent is Combo) ((Combo) parent).update(val.trim)
 	}
 }

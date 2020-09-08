@@ -6,6 +6,9 @@ using dom::Win
 
 	** This is the main entry point to the Js App
 	virtual Void init(Type appType, Str:Obj? config) {
+		
+		// FIXME - chicken+egg - make IoC create ErrHandler
+		
 		iocObjs		:= iocObjs
 		errHandler	:= iocObjs[ErrHandler#] as ErrHandler
 		if (errHandler == null) {
@@ -20,7 +23,7 @@ using dom::Win
 		}
 	}
 
-	** Hook to pre-configure the IoC with ready-made objects
+	** Hook to pre-configure the IoC with ready-made objects.
 	virtual Type:Obj iocObjs() {
 		Type:Obj?[
 			ErrHandler#	: ErrHandler()

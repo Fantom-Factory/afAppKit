@@ -41,19 +41,16 @@ using dom::Win
 		catch (Err err) onError(err)
 	}
 
-	Void onError(Err? cause := null) {
+	virtual Void onError(Err? cause := null) {
 		log.err("As caught by ErrHandler", cause)
 		openModal(errTitle, errMsg)
 		if (cause != null)
 			throw cause
 	}
 	
-	Log	log() { this.typeof.pod.log }
-	
-	Void openModal(Str title, Obj body) {
-		// TODO what of modal CSS ?
-		// FIXME open modal
+	virtual Void openModal(Str title, Obj body) {
 		Modal.createErrDialog(title, body).open
-//		dom::Win.cur.alert(body)
 	}
+
+	virtual Log	log() { this.typeof.pod.log }
 }
