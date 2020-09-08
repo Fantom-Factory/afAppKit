@@ -20,8 +20,8 @@ using graphics::Point
 	private new _make(Elem elem) {
 		this.elem = elem
 
-		if (elem.tagName != "button")
-			throw ArgErr("Elem not button: ${elem.html}")
+//		if (elem.tagName != "button")
+//			throw ArgErr("Elem not button: ${elem.html}")
 		
 		init()
 	}
@@ -135,7 +135,7 @@ using graphics::Point
 
 	** The enabled attribute.
 	Bool enabled {
-		get { elem->disabled->not }
+		get { (elem->disabled as Bool)?.not ?: true  }
 		set {
 			elem->disabled = it.not
 			if (it) {

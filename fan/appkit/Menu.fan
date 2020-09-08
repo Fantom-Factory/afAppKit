@@ -7,20 +7,24 @@ using graphics::Point
 ** Popup menu
 **
 **   html:
-**   <button class="appkit-button">
-**       <div class="appkit-popup appkit-menu">
+**   <div class="appkit-dropdown">
+**       <button class="appkit-button" type="button"> Click Me </button>
+**       <div class="appkit-menu">
 **           <a class="appkit-menuItem" href="#">Alpha</a>
 **           <a class="appkit-menuItem" href="#">Beta</a>
+**           <div class="appkit-menuHr"/>
 **           <a class="appkit-menuItem" href="#">Gamma</a>
 **       </div>
-**   </button>
+**   </div>
 ** 
 **   slim:
-**   button.appkit-button
-**       div.appkit-popup.appkit-menu
+**    div.appkit-dropdown
+**       button.appkit-button (type="button") Click Me
+**       div.appkit-menu
 **           a.appkit-menuItem (href="#") Alpha  
 **           a.appkit-menuItem (href="#") Beta  
-**           a.appkit-menuItem (href="#") Gamma  
+**           div.appkit-menuHr  
+**           a.appkit-menuItem (href="#") Gamma
 ** 
 @Js class Menu : Popup {
 
@@ -37,7 +41,7 @@ using graphics::Point
 	}
 	
 	private Void init() {
-		this->tabIndex = 0
+		elem->tabIndex = 0
 		elem.style.addClass("appkit-menu")
 		this.onOpen { this.elem.focus }
 		elem.onEvent("mouseleave", false) { select(null) }
@@ -58,7 +62,7 @@ using graphics::Point
 			}
 			lastEvent = 0
 		}
-		elem.onEvent("mousedown", false) |e| { armed=true }
+		elem.onEvent("mousedown", false) |e| { armed = true }
 		elem.onEvent("mouseup",	 false) |e| { if (armed) fireAction(e) }
 		elem.onEvent("keydown", false) |e| {
 			switch (e.key) {
@@ -153,11 +157,10 @@ using graphics::Point
 	}
 
 	// internal use only
-	internal Func? onCustomKeyDown := null
-
-	private Int? selIndex
-	private Int lastEvent := 0	 // 0=mouse, 1=key
-	private Bool armed := false	// don't fire mouseUp unless we first detect a mouse down
+	internal Func?	onCustomKeyDown := null
+	private  Int?	selIndex
+	private  Int	lastEvent		:= 0	 	// 0=mouse, 1=key
+	private  Bool	armed			:= false	// don't fire mouseUp unless we first detect a mouse down
 }
 
 **
@@ -173,11 +176,11 @@ using graphics::Point
 	}
 
 	static new fromSelector(Str selector, Bool checked := true) {
-		AppElem.fromSelector(selector, Menu#, checked)
+		AppElem.fromSelector(selector, MenuItem#, checked)
 	}
 	
 	static new fromElem(Elem? elem, Bool checked := true) {
-		AppElem.fromElem(elem, Menu#, checked)
+		AppElem.fromElem(elem, MenuItem#, checked)
 	}
 	
 	private Void init() {

@@ -6,17 +6,21 @@ using graphics::Point
 
 **
 ** Popup window which can be closed clicking outside of element.
+** Enclose it in an 'appkit-dropdown' div. 
 **
 **   html:
-**   <button class="appkit-button">
+**   <div class="appkit-dropdown">
+**       <button class="appkit-button" type="button"> Click Me </button>
 **       <div class="appkit-popup">
 **           Hello!
 **       </div>
-**   </button>
+**   </div>
+**   
 ** 
 **   slim:
-**   button.appkit-button
-**     div.appkit-popup Hello!
+**   div.appkit-dropdown
+**       button.appkit-button (type="button") Click Me
+**       div.appkit-popup Hello!
 ** 
 @Js class Popup {
 
@@ -73,12 +77,15 @@ using graphics::Point
 		body := Win.cur.doc.body
 		body.add(mask = Elem {
 			it.style.addClass("appkit-popup-mask")
+			
+			/*
 			it.style->position	= "absolute"
 			it.style->top		= "0"
 			it.style->left		= "0"
 			it.style->width		= "100%"
 			it.style->height	= "100%"
 			it.style->zIndex	= "100"
+			*/
 			
 			/*
 			div.domkit-Popup-mask {
@@ -95,6 +102,11 @@ using graphics::Point
 				if (e.target == elem || elem.containsChild(e.target)) return
 				close
 			}
+			
+			// save where we were - Slimer
+			oldParent = elem.parent
+			elem.parent.remove(elem)
+			
 			it.add(elem)
 		})
 
@@ -110,6 +122,12 @@ using graphics::Point
 	** this method does nothing.
 	Void close() {
 		elem.transition(["transform": "scale(0.75)", "opacity": "0"], null, 100ms) {
+			
+			// move elem back to whence it came - Slimer
+			// TODO save the index also
+			elem.parent.remove(elem)
+			oldParent?.add(elem)
+			
 			mask?.parent?.remove(mask)
 			fireClose(null)
 		}
@@ -176,4 +194,5 @@ using graphics::Point
 	private Func?	cbOpen
 	private Func?	cbClose
 	private Func?	_cbClose
+	private	Elem?	oldParent
 }
