@@ -3,6 +3,7 @@ using dom::Event
 using dom::Win
 
 @Js class ErrHandler {
+	// FIXME config inject these msgs? Wot about some non Steve generic msgs?
 	static const Str	errTitle 	:= "Shazbot! The computer reported an error!"
 	static const Str	errMsg		:= "Don't worry, it's not your fault - it's ours!\n\nSteve can fix it (he can fix anything!) but he needs to know about it first. Just drop us a quick email telling us what happened and Steve will do his best.\n\nCheers,\n\nFantom Factory.".replace("\n", "<br>")
 
@@ -50,8 +51,9 @@ using dom::Win
 	Log	log() { this.typeof.pod.log }
 	
 	Void openModal(Str title, Obj body) {
+		// TODO what of modal CSS ?
 		// FIXME open modal
-//		Modal.createErrDialog(title, body).open
-		dom::Win.cur.alert(body)
+		Modal.createErrDialog(title, body).open
+//		dom::Win.cur.alert(body)
 	}
 }

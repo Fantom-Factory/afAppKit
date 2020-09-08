@@ -31,6 +31,21 @@ using dom
 		return elem.prop(Checkbox#.qname)
 	}
 
+	** The enabled attribute.
+	Bool enabled {
+		get { elem->disabled->not }
+		set {
+			elem->disabled = it.not
+			if (it) {
+				elem.style.removeClass("disabled")
+				elem->tabIndex = 0
+			} else {
+				elem.style.addClass("disabled")
+				elem->tabIndex = -1
+			}
+		}
+	}
+
 	** Set to 'true' to set field to readonly mode.
 	Bool ro {
 		get { elem->readOnly }

@@ -36,7 +36,23 @@ using dom
 		return elem.prop(TextField#.qname)
 	}
 
+	** The enabled attribute.
+	Bool enabled {
+		get { elem->disabled->not }
+		set {
+			elem->disabled = it.not
+			if (it) {
+				elem.style.removeClass("disabled")
+				elem->tabIndex = 0
+			} else {
+				elem.style.addClass("disabled")
+				elem->tabIndex = -1
+			}
+		}
+	}
+	
 	** Preferred width of field in columns, or 'null' for default.
+	** (Only applicable for TextAreas)
 	Int? cols {
 		get { elem->size }
 		set { elem->size = it }  
