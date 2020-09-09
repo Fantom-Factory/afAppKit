@@ -44,8 +44,8 @@ using graphics::Point
 		elem->tabIndex = 0
 		elem.style.addClass("appkit-menu")
 		this.onOpen { this.elem.focus }
-		elem.onEvent("mouseleave", false) { select(null) }
-		elem.onEvent("mouseover", false) |e| {
+		this.onEvent("mouseleave", false) { select(null) }
+		this.onEvent("mouseover", false) |e| {
 			// keyboard scrolling generates move/over events we need to filter out
 			if (lastEvent > 0) { lastEvent=0; return }
 
@@ -62,9 +62,9 @@ using graphics::Point
 			}
 			lastEvent = 0
 		}
-		elem.onEvent("mousedown", false) |e| { armed = true }
-		elem.onEvent("mouseup",	 false) |e| { if (armed) fireAction(e) }
-		elem.onEvent("keydown", false) |e| {
+		this.onEvent("mousedown", false) |e| { armed = true }
+		this.onEvent("mouseup",	 false) |e| { if (armed) fireAction(e) }
+		this.onEvent("keydown", false) |e| {
 			switch (e.key) {
 				case Key.esc	: close
 				case Key.up		: e.stop; lastEvent=1; select(selIndex==null ? findFirst : findPrev(selIndex))
@@ -154,6 +154,11 @@ using graphics::Point
 		if (selIndex == null) return
 		item := MenuItem(elem.children[selIndex])
 		item.fireAction(e)
+	}
+
+	** Wraps up event handling to use err handling
+	private Func onEvent(Str type, Bool useCapture, |Event e| handler) {
+		AppElem.onEvent(elem, type, useCapture, handler)
 	}
 
 	// internal use only

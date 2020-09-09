@@ -39,7 +39,7 @@ using graphics::Point
 		
 		// FIXME use ErrHandler - get from actor locals
 		
-		elem.onEvent("mousedown", false) |e| {
+		this.onEvent("mousedown", false) |e| {
 			e.stop
 			if (!enabled) return
 			this._event = e
@@ -47,7 +47,7 @@ using graphics::Point
 			doMouseDown
 		}
 
-		elem.onEvent("mouseup", false) |e| {
+		this.onEvent("mouseup", false) |e| {
 			if (!enabled) return
 			this._event = e
 			doMouseUp
@@ -58,14 +58,14 @@ using graphics::Point
 			mouseDown = false
 		}
 
-		elem.onEvent("mouseleave", false) |e| {
+		this.onEvent("mouseleave", false) |e| {
 			if (!mouseDown) return
 			this._event = e
 			doMouseUp
 			mouseDown = false
 		}
 
-		elem.onEvent("keydown", false) |e| {
+		this.onEvent("keydown", false) |e| {
 			if (!enabled) return
 			_event = e
 			if (e.key == Key.space) {
@@ -150,6 +150,11 @@ using graphics::Point
 		}
 	}
 
+	** Wraps up event handling to use err handling
+	private Func onEvent(Str type, Bool useCapture, |Event e| handler) {
+		AppElem.onEvent(elem, type, useCapture, handler)
+	}
+	
 	// internal use only
 	internal Bool isCombo := false
 

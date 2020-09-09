@@ -30,12 +30,12 @@ using dom::Key
 	private Void init() {
 		elem.style.addClass("appkit-control appkit-control-text appkit-textfield")
 
-		elem.onEvent("input", false) |e| {
+		this.onEvent("input", false) |e| {
 			checkUpdate
 			fireModify(e)
 		}
 
-		elem.onEvent("keydown", false) |e| {
+		this.onEvent("keydown", false) |e| {
 			if (e.key == Key.enter) fireAction(e)
 		}
 	}
@@ -106,6 +106,11 @@ using dom::Key
 		elem->selectionEnd	 = end
 	}
 
+	** Wraps up event handling to use err handling
+	private Func onEvent(Str type, Bool useCapture, |Event e| handler) {
+		AppElem.onEvent(elem, type, useCapture, handler)
+	}
+	
 	internal Void fireAction(Event? e) { cbAction?.call(this) }
 	private Func? cbAction := null
 

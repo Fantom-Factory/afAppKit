@@ -27,7 +27,7 @@ using dom::CssDim
 	private new _make(Elem elem) {
 		this.elem = elem
 		
-		elem.onEvent("keydown", false) |e| {
+		this.onEvent("keydown", false) |e| {
 			// Enter for closing "Wrong - Try Again!" Mini-Modals
 			if (e.key == Key.esc || (elem.querySelector("form") == null && e.key == Key.enter))
 				close
@@ -35,7 +35,7 @@ using dom::CssDim
 				cbKeyDown?.call(e)
 		}
 		
-		elem.onEvent("click", false) |e| {
+		this.onEvent("click", false) |e| {
 			if (e.target == elem) {
 				// ignore background clicks on modals with Forms
 				// Emma has a habit (on Chrome) of *over-selecting* text which closes the dialog!
@@ -238,6 +238,11 @@ using dom::CssDim
 		// this is actually unhelpful - but if ever needed, should be called addOnClosed()  
 //		oldFn := cbClosed
 //		cbClosed = oldFn == null ? newFn : |Modal th| { oldFn(th); newFn(th) }
+	}
+	
+	** Wraps up event handling to use err handling
+	private Func onEvent(Str type, Bool useCapture, |Event e| handler) {
+		AppElem.onEvent(elem, type, useCapture, handler)
 	}
 
 	private Void fireOpened()	{ cbOpened?.call(this)	}

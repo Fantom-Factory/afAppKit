@@ -1,6 +1,7 @@
 using dom::Elem
 using dom::Event
 using dom::Win
+using concurrent::Actor
 
 @Js class ErrHandler {
 	@Config Str	errTitle 	:= "Shazbot! The computer reported an error!"
@@ -8,6 +9,14 @@ using dom::Win
 
 	new make(|This|? f := null) { f?.call(this) }
 
+	Void init() {
+		Actor.locals["appKit.errHandler"] = this
+	}
+	
+	static ErrHandler instance() {
+		Actor.locals["appKit.errHandler"]
+	}
+	
 	Void onClick(Obj? obj, |Event, Elem| fn) {
 		onEvent("click", obj, fn)
 	}
@@ -34,10 +43,13 @@ using dom::Win
 		}
 	}
 	
-	** Define |Obj| to utilise it-block funcs
-	Void wrap(|Obj?| fn) {
-		try	fn(null)
-		catch (Err err) onError(err)
+	** Define |Obj| to utilise it-block funcs.
+	Obj? wrap(|Obj?->Obj?| fn) {
+		try	return fn(null)
+		catch (Err err) {
+			onError(err)
+			return null	// will never get called
+		}
 	}
 
 	virtual Void onError(Err? cause := null) {

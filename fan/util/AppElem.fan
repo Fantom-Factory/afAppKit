@@ -1,4 +1,5 @@
 using dom::Elem
+using dom::Event
 using dom::Win
 
 @Js internal class AppElem {
@@ -28,4 +29,12 @@ using dom::Win
 		return appObj
 	}
 	
+	** // wraps up event handling to use err handling
+	static Func onEvent(Elem elem, Str type, Bool useCapture, |Event| handler) {
+		elem.onEvent(type, useCapture) |e| {
+			try handler(e)
+			catch (Err err)
+				ErrHandler.instance.onError(err)
+		}
+	}
 }

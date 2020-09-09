@@ -28,7 +28,7 @@ using dom::Event
 	private Void init() {
 		elem.style.addClass("appkit-checkbox")
 		
-		elem.onEvent("change", false) |e| {
+		this.onEvent("change", false) |e| {
 			fireAction(e)
 		}
 	}
@@ -72,6 +72,11 @@ using dom::Event
 		set { elem->checked = it }
 	}
 
+	** Wraps up event handling to use err handling
+	private Func onEvent(Str type, Bool useCapture, |Event e| handler) {
+		AppElem.onEvent(elem, type, useCapture, handler)
+	}
+	
 	** Callback when 'enter' key is pressed.
 	Void onAction(|This| f) { this.cbAction = f }
 

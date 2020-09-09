@@ -46,7 +46,7 @@ using graphics::Point
 	
 	private Void init() {
 		elem.style.addClass("appkit-popup")
-		elem.onEvent("keydown", false) |e| { if (e.key == Key.esc) close }
+		this.onEvent("keydown", false) |e| { if (e.key == Key.esc) close }
 		elem->tabIndex = 0
 	}
 
@@ -179,6 +179,11 @@ using graphics::Point
 	** Callback when popup is closed.
 	Void onClose(|This| f) { cbClose = f }
 
+	** Wraps up event handling to use err handling
+	private Func onEvent(Str type, Bool useCapture, |Event e| handler) {
+		AppElem.onEvent(elem, type, useCapture, handler)
+	}
+	
 	** Internal callback when popup is closed.
 	internal Void _onClose(|This| f) { _cbClose = f }
 

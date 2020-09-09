@@ -25,6 +25,9 @@ using dom::Win
 		logLogo(appNom, appVer)
 
 		injector := MiniIoc(iocObjs, config)
+		errHand	 := (ErrHandler) injector.get(ErrHandler#)
+		errHand.init
+
 		appPage  := injector.build(appType)
 		appPage.typeof.method("init", false)?.callOn(appPage, null)
 	}
