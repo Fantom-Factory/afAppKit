@@ -35,15 +35,18 @@
 		plan := Field:Obj?[:]
 		type.fields.each |field| {
 			if (field.isStatic) return
-			if (field.hasFacet(Config#))
-				plan[field] = getConf(field.name, field.type)
+			if (field.hasFacet(Config#)) {
+				config := getConfig(field.name, field.type)
+				if (config != null)	// allow default field values if config not provided
+					plan[field] = config
+			}
 			if (field.hasFacet(Inject#))
 				plan[field] = getOrBuildVal(field.type)
 		}
 		return plan
 	}
 	
-	private Obj? getConf(Str name, Type type) {
+	private Obj? getConfig(Str name, Type type) {
 		key := name.contains(".") ? name : config.keys.find |key| { key.split('.').last == name }
 		val := key == null ? null : config[key]
 		

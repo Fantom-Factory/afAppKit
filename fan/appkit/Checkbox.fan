@@ -78,7 +78,7 @@ using dom::Event
 	}
 	
 	** Callback when 'enter' key is pressed.
-	Void onAction(|This| f) { this.cbAction = f }
+	Void onAction(|This| f) { this.cbAction = ErrHandler.instance.wrapFn(f) }
 
 	internal Void fireAction(Event? e) { cbAction?.call(this) }
 	private Func? cbAction := null

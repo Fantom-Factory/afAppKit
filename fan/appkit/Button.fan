@@ -82,10 +82,10 @@ using graphics::Point
 	}
 
 	** Callback when button action is invoked.
-	Void onAction(|This| f) { this.cbAction = f }
+	Void onAction(|This| f) { this.cbAction = ErrHandler.instance.wrapFn(f) }
 
 	** Callback to create Popup to display when button is pressed.
-	Void onPopup(|Button->Popup| f) { this.cbPopup = f }
+	Void onPopup(|Button->Popup| f) { this.cbPopup = ErrHandler.instance.wrapObjFn(f) }
 
 	** Offset to apply to default origin for `onPopup`.
 	@NoDoc Point popupOffset := Point.defVal
@@ -113,6 +113,8 @@ using graphics::Point
 
 		showDown
 		popup = cbPopup(this)
+		// popup is null if cbPopup err'ed - Slimer
+		if (popup == null) return
 
 		// adjust popup origin if haligned
 		switch (popup.halign) {

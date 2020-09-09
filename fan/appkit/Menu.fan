@@ -198,7 +198,7 @@ using graphics::Point
 	}
 
 	** Callback when item is selected.
-	Void onAction(|This| f) { this.cbAction = f }
+	Void onAction(|This| f) { this.cbAction = ErrHandler.instance.wrapFn(f) }
 
 	internal Void fireAction(Event e) {
 		if (!enabled) return
