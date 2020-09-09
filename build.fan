@@ -19,6 +19,9 @@ class Build : BuildPod {
 			// ---- Fantom Web ------------------
 			"dom        1.0.73 - 1.0",
 			"graphics   1.0.73 - 1.0",
+
+			// ---- Fantom Factory Web ----------
+			"afPickle   0.0.4  - 1.0",
 		]
 
 		srcDirs = [`fan/`, `fan/appkit/`, `fan/core/`, `fan/util/`]

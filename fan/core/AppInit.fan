@@ -1,3 +1,4 @@
+using afPickle::Pickle
 using dom::Elem
 using dom::Doc
 using dom::Win
@@ -5,8 +6,10 @@ using dom::Win
 @Js class AppInit {
 
 	** This is the main entry point to the Js App
-	virtual Void init(Type appType, Str:Obj? config) {
+	virtual Void init(Str appTypeStr, Str configStr) {
 		try {
+			appType := Pickle.readObj(appTypeStr)
+			config	:= Pickle.readObj(configStr)
 			iocObjs	:= iocObjs
 			doInit(appType, iocObjs, config)
 		} catch (Err cause) {
