@@ -13,6 +13,10 @@
 //			pop := Popup (dd.querySelector(".appkit-popup" ), true)
 //			men := Menu  (dd.querySelector(".appkit-menu"  ), true)
 //			
+//			ali := btn.elem["data-halign"]
+//			if (ali != null)
+//				men.halign = Align.fromStr(ali)
+//
 //			if (btn != null && (pop != null || men != null)) {
 //				btn.onPopup { men ?: pop }
 //			}
