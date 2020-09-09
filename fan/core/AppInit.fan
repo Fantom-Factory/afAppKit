@@ -39,8 +39,6 @@ using dom::Win
 		injector := MiniIoc(iocObjs, config)
 		appPage  := injector.build(appType)
 		appPage.typeof.method("init", false)?.callOn(appPage, null)
-		
-		AppElemInit().init
 	}
 
 	

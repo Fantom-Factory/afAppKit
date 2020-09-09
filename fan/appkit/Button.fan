@@ -37,6 +37,8 @@ using graphics::Point
 	private Void init() {
 		elem.style.addClass("appkit-control appkit-control-button appkit-button")
 		
+		// FIXME use ErrHandler - get from actor locals
+		
 		elem.onEvent("mousedown", false) |e| {
 			e.stop
 			if (!enabled) return

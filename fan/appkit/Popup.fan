@@ -71,6 +71,7 @@ using graphics::Point
 			"left"				: "${x}px",
 			"top"				: "${y}px",
 			"-webkit-transform"	: "scale(1)",
+			"transform"			: "scale(1)",
 			"opacity"			: "0.0"
 		])
 

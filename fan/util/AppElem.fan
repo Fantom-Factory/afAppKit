@@ -12,8 +12,11 @@ using dom::Win
 	static Obj? fromElem(Elem? elem, Type type, Bool checked) {
 		if (elem == null) return null
 		if (elem.prop("appkit-elem") == null) {			
-			if (!elem.style.hasClass("appkit-${type.name.lower}"))
-				return checked ? throw ArgErr("Elem does not have class: appkit-${type.name.lower}\n${elem.html}") : null
+
+			// we now add these classes ourselves, to signify ownership - they're not there to be styled or queried
+//			if (!elem.style.hasClass("appkit-${type.name.lower}"))
+//				return checked ? throw ArgErr("Elem does not have class: appkit-${type.name.lower}\n${elem.html}") : null
+			
 			appElem := type.method("_make").call(elem)
 			elem.setProp("appkit-elem", appElem)
 		}
