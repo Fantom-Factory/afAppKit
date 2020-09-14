@@ -36,7 +36,7 @@ using dom::Win
 	}
 
 	Void logLogo(Str name, Str ver) {
-		tag  := "powers ${name} v${ver}"
+		tag  := "presents ${name} v${ver}"
 		logo := Str<|   _____         __               _____        __                
 		               / ___/_  _____/ /_____ ______  / ___/_  ____/ /_________  __ __
 		              / __/ _ \/ _  / __/ _  / , , / / __/ _ \/ __/ __/ _  / __|/ // /

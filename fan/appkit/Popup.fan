@@ -125,7 +125,7 @@ using graphics::Point
 		elem.transition(["transform": "scale(0.75)", "opacity": "0"], null, 100ms) {
 			
 			// move elem back to whence it came - Slimer
-			// TODO save the index also
+			// todo save the index also
 			elem.parent.remove(elem)
 			oldParent?.add(elem)
 			
