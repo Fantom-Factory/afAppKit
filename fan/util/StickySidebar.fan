@@ -5,20 +5,21 @@ using graphics::Size
 using graphics::Point
 
 ** <!-- container -->
-** <div id="main-content" class="main">
+** <div class="main-content">
 ** 
-**     <div id="sidebar" class="sidebar">
+**     <div class="sidebar">
 **         <div class="sidebar__inner">
 **             <!-- Content goes here -->
 **         </div>
 **     </div>
-**     <div id="content" class="content">
+** 
+**     <div class="content">
 **         <!-- Content goes here -->
 **     </div>
 ** 
 ** </div>
 ** 
-** Adapted from `https://abouolia.github.io/sticky-sidebar/` and it's Scrollable Sticky Element.
+** Adapted from `https://abouolia.github.io/sticky-sidebar/` and its Scrollable Sticky Element.
 @Js class StickySidebar {
 	
 	private static const Str EVENT_KEY	:= ".stickySidebar"
@@ -38,7 +39,6 @@ using graphics::Point
 	private Elem		container
 	private Str			affixedType
 	private Str			direction
-	private Bool		_initialized
 	private Bool		_reStyle
 	private Bool		_breakpoint
 	private StickySidebarDims	dimensions
@@ -54,7 +54,6 @@ using graphics::Point
 		this.affixedType	= "STATIC"
 		this.direction		= "down"
 
-		this._initialized	= false
 		this._reStyle		= false
 		this._breakpoint	= false
 		
@@ -74,9 +73,6 @@ using graphics::Point
 		
 		// Bind all events.
 		this.bindEvents()
-		
-		// Inform other properties the sticky sidebar is initialized.
-		this._initialized = true
 	}
 
 	** Breakdown sticky sidebar when window width is below `options.minWidth` value.
@@ -187,7 +183,6 @@ using graphics::Point
 			affixType = ("up" == this.direction)
 				? this._getAffixTypeScrollingUp()
 				: this._getAffixTypeScrollingDown()
-echo("cool = $affixType")
 		}
 
 		// Make sure the translate Y is not bigger than container height.
@@ -212,8 +207,6 @@ echo("cool = $affixType")
 		affixType		:= this.getAffixType()
 		style			:= this._getStyle(affixType)
 
-echo(affixType + "  " + style)
-		
 		if (this.affixedType != affixType || force) {
 			affixEvent	:= "affix." + affixType.lower.replace("viewport-", "") + EVENT_KEY
 			eventTrigger(this.sidebar, affixEvent)
@@ -276,7 +269,7 @@ echo(affixType + "  " + style)
 				dims.translateY = colliderBottom - sidebarBottom
 				affixType = "VIEWPORT-BOTTOM"
 	
-			} else if (dims.containerTop + dims.translateY <= colliderTop && (0f < dims.translateY && dims.maxTranslateY > dims.translateY)) {
+			} else if (dims.containerTop + dims.translateY <= colliderTop && (dims.translateY > 0f && dims.translateY < dims.maxTranslateY)) {
 				affixType = "VIEWPORT-UNBOTTOM"
 			}
 		}
@@ -302,7 +295,7 @@ echo(affixType + "  " + style)
 	
 		} else if (!this.isSidebarFitsViewport) {
 	
-			if (dims.containerTop <= colliderTop && (0f < dims.translateY && dims.maxTranslateY > dims.translateY)) {
+			if (dims.containerTop <= colliderTop && (dims.translateY > 0f && dims.translateY < dims.maxTranslateY)) {
 				affixType = "VIEWPORT-UNBOTTOM"
 			}
 		}
@@ -315,42 +308,42 @@ echo(affixType + "  " + style)
 		dims	:= this.dimensions
 		style	:= [
 			"inner" : Str:Obj?[
-				"position"	: null,
-				"top"		: null,
-				"left"		: null,
-				"bottom"	: null,
-				"width"		: null,
-				"transform"	: null,
+				"position"	: "relative",
+				"top"		: "",
+				"left"		: "",
+				"bottom"	: "",
+				"width"		: "",
+				"transform"	: "",
 			],
 			"outer"	: Str:Obj?[
-				"height"	: null,
-				"position"	: null,
+				"height"	: "",
+				"position"	: "",
 			]
 		]
 
 		switch (affixType) {
 			case "VIEWPORT-TOP":
-				style["inner"] = [
+				style["inner"].setAll([
 					"position"	: "fixed",
 					"top"		: dims.topSpacing,
 					"left"		: dims.sidebarLeft - dims.viewportLeft,
 					"width"		: dims.sidebarWidth
-				]
+				])
 
 			case "VIEWPORT-BOTTOM":
-				style["inner"] = [
+				style["inner"].setAll([
 					"position"	: "fixed",
 					"top"		: "auto",
 					"left"		: dims.sidebarLeft,
 					"bottom"	: dims.bottomSpacing,
 					"width"		: dims.sidebarWidth
-				]
+				])
 
 			case "CONTAINER-BOTTOM":
 			case "VIEWPORT-UNBOTTOM":
-				style["inner"] = [
-					"transform" : _getTranslate(0f, dims.translateY, 0f)
-				]
+				style["inner"].setAll([
+					"transform" : "translate3d(0, ${dims.translateY.toInt}px, 0)" 
+				])
 		}
 
 		switch (affixType) {
@@ -358,10 +351,10 @@ echo(affixType + "  " + style)
 			case "VIEWPORT-BOTTOM":
 			case "VIEWPORT-UNBOTTOM":
 			case "CONTAINER-BOTTOM":
-				style["outer"] = [
+				style["outer"].setAll([
 					"height"	: dims.sidebarHeight,
 					"position"	: "relative"
-				]
+				])
 		}
 
 		return style
@@ -378,7 +371,6 @@ echo(affixType + "  " + style)
 				// When browser is scrolling and re-calculate just dimensions
 				// within scroll.
 				case "scroll":
-echo("scrolling...")
 					this._calcDimensionsWithScroll()
 					this.observeScrollDir()
 					this.stickyPosition(false)
@@ -406,13 +398,6 @@ echo("scrolling...")
 		// If the browser is scrolling not in the same direction.
 		if (dims.viewportTop == furthest)
 			this.direction = "down" == this.direction ?  "up" : "down"
-echo("we are scrolling $this.direction")
-	}
-
-	** Get translate value, if the browser supports transfrom3d, it will adopt it.
-	** and the same with translate. if browser doesn"t support both return false.
-	private static Str _getTranslate(Float x, Float y, Float z) {
-		"translate3d(${x.toInt}px, ${y.toInt}px, ${z.toInt}px)"
 	}
 
 //	** Destroy sticky sidebar plugin.
