@@ -42,3 +42,9 @@ fan.afAppKit.StickySidebarPeer.docScrollPoint = function() {
 	var left = document.documentElement.scrollLeft || document.body.scrollLeft;
 	return fan.graphics.Point.makeInt(left, top);
 }
+
+fan.afAppKit.StickySidebarPeer.resizeSensor = function(fanElem, fn) {
+	new ResizeSensor(fanElem.peer.elem, function() {
+		fn.call(self);
+	});
+}

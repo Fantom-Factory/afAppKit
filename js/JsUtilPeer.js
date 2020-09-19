@@ -51,3 +51,4 @@ fan.afAppKit.JsUtilPeer.copyToClipboard = function(text) {
 	document.body.removeChild(textArea);
 	return text;
 };
+

@@ -33,7 +33,6 @@ fan.afAppKit.ResizeObserverPeer.$makeEntry = function(entry) {
 	var fanEntry = fan.afAppKit.ResizeEntry.make();
 
 	fanEntry.m_target		= fan.dom.ElemPeer.wrap(entry.target);
-console.info(entry.contentRect);
 	fanEntry.m_contentRect	= fan.graphics.Rect.makeInt(entry.contentRect.x, entry.contentRect.y, entry.contentRect.width, entry.contentRect.height);
 
 	return fanEntry;

@@ -24,12 +24,11 @@ using graphics::Point
 @Js class StickySidebar {
 	
 	static const Str:Obj? defOpts := [
-		"topSpacing"			: 0f,					// Numeric|Function
-		"bottomSpacing"			: 0f,					// Numeric|Function
+		"topSpacing"			: 0f,					// Numeric
+		"bottomSpacing"			: 0f,					// Numeric
 		"innerWrapperSelector"	: ".sidebar__inner",	// String
-		"stickyClass"			: "is-affixed",			// String|False
-		"resizeSensor"			: true,					// Boolean
-		"minWidth"				: false,				// Numeric
+		"stickyClass"			: "is-affixed",			// String
+		"minWidth"				: 0f,					// Numeric
 	].toImmutable
 	
 	private Str:Obj?	options
@@ -71,7 +70,7 @@ using graphics::Point
 		this.stickyPosition(false)
 		
 		// Bind all events.
-		this.bindEvents()
+		this._bindEvents()
 	}
 
 	** Breakdown sticky sidebar when window width is below `options.minWidth` value.
@@ -100,7 +99,7 @@ using graphics::Point
 	
 		// Sidebar dimensions.
 		dims.sidebarHeight		= this.sidebarInner.size.h
-		dims.sidebarWidth		= this.sidebarInner.size.w
+		dims.sidebarWidth		= this.sidebar.size.w
 	
 		// Screen viewport dimensions.
 		dims.viewportHeight		= windowInnerSize.h
@@ -112,7 +111,7 @@ using graphics::Point
 	}
 	
 	** Bind all events of sticky sidebar plugin.
-	private Void bindEvents() {
+	private Void _bindEvents() {
 		Win.cur.onEvent("resize", false) { this.updateSticky(it) }
 		Win.cur.onEvent("scroll", false) { this.updateSticky(it) }
 		
@@ -121,11 +120,13 @@ using graphics::Point
 			}.observe(this.container).observe(this.sidebarInner)
 		catch {
 			typeof.pod.log.warn("ResizeObserver not supported")
+			resizeSensor(this.container) 	{ this.updateSticky(null) }
+			resizeSensor(this.sidebarInner)	{ this.updateSticky(null) }	
 		}
 	}
 	
 	** Some dimensions values need to be up-to-date when scrolling the page.
-	Void _calcDimensionsWithScroll() {
+	private Void _calcDimensionsWithScroll() {
 		dims := this.dimensions
 		docs := docScrollPoint
 	
@@ -158,14 +159,14 @@ using graphics::Point
 	}
 	
 	** Determine whether the sidebar is bigger than viewport.
-	private Bool isSidebarFitsViewport() {
+	private Bool _isSidebarFitsViewport() {
 		dims	:= this.dimensions
 		offset	:= this.scrollDirection == "down" ? dims.lastBottomSpacing : dims.lastTopSpacing
 		return this.dimensions.sidebarHeight + offset < this.dimensions.viewportHeight
 	}
 
 	** Gets affix type of sidebar according to current scroll top and scrolling direction.
-	private Str getAffixType() {
+	private Str _getAffixType() {
 		this._calcDimensionsWithScroll()
 		dims		:= this.dimensions
 		colliderTop	:= dims.viewportTop + dims.topSpacing
@@ -192,7 +193,7 @@ using graphics::Point
 
 	** Cause the sidebar to be sticky according to affix type by adding inline
 	** style, adding helper class and trigger events.
-	Void stickyPosition(Bool force) {
+	Void stickyPosition(Bool force := false) {
 		if (this._breakpoint) return
 
 		force			= this._reStyle || force
@@ -200,7 +201,7 @@ using graphics::Point
 		offsetTop		:= this.options["topSpacing"]
 		offsetBottom	:= this.options["bottomSpacing"]
 
-		affixType		:= this.getAffixType()
+		affixType		:= this._getAffixType()
 		style			:= this._getStyle(affixType)
 
 		if (this.affixedType != affixType || force) {
@@ -241,7 +242,7 @@ using graphics::Point
 		colliderBottom	:= dims.viewportBottom	- dims.bottomSpacing
 		affixType		:= this.affixedType
 
-		if (this.isSidebarFitsViewport) {
+		if (this._isSidebarFitsViewport) {
 			if (dims.sidebarHeight + colliderTop >= dims.containerBottom) {
 				dims.translateY = dims.containerBottom - sidebarBottom
 				affixType = "CONTAINER-BOTTOM"
@@ -284,7 +285,7 @@ using graphics::Point
 			dims.translateY = dims.containerBottom - sidebarBottom
 			affixType = "CONTAINER-BOTTOM"
 	
-		} else if (!this.isSidebarFitsViewport) {
+		} else if (!this._isSidebarFitsViewport) {
 	
 			if (dims.containerTop <= colliderTop && (dims.translateY > 0f && dims.translateY < dims.maxTranslateY)) {
 				affixType = "VIEWPORT-UNBOTTOM"
@@ -365,10 +366,10 @@ using graphics::Point
 				// within scroll.
 				case "scroll":
 					this._calcDimensionsWithScroll()
-					this.observeScrollDir()
+					this._observeScrollDir()
 					this.stickyPosition(false)
 		
-				// When browser is resizing or there"s no event, observe width
+				// When browser is resizing or there's no event, observe width
 				// breakpoint and re-calculate dimensions.
 				case "resize":
 				default:
@@ -382,7 +383,7 @@ using graphics::Point
 
 
 	** Observe browser scrolling direction top and down.
-	private Void observeScrollDir() {
+	private Void _observeScrollDir() {
 		dims := this.dimensions
 		if (dims.lastViewportTop == dims.viewportTop) return
 
@@ -427,6 +428,8 @@ using graphics::Point
 	private native static Point offsetPoint(Elem elem)
 
 	private native static Point docScrollPoint()
+
+	private native static Void resizeSensor(Elem elem, |This| fn)
 }
 
 @Js internal class StickySidebarDims {

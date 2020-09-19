@@ -3,7 +3,7 @@ using dom::CssDim
 
 @Js const class JsUtil {
 	
-	** Returns a new DateTime in the user's time zone.
+	** Returns a new DateTime in the browsers's time zone.
 	** Note the date is correct, but the TimeZone is not - we just adjust the time.
 	static DateTime toLocalTs(DateTime dateTime) {
 		dateTime.toUtc.minus(utcOffset)
@@ -43,4 +43,5 @@ using dom::CssDim
 	}
 	
 	native static Str copyToClipboard(Str text)
+	
 }
