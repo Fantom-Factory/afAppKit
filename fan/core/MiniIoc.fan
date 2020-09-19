@@ -31,12 +31,33 @@
 		return type.make(args)
 	}
 	
+	** Returns the given config, optionally coerced to the given type.
+	Obj? getConfig(Str name, Type? type := null, Bool checked := true) {
+		key := name.contains(".") ? name : config.keys.find |key| { key.split('.').last == name }
+		val := key == null ? null : config[key]
+		
+		if (val == null) {
+			if (checked) throw Err("Config key not found: $name\nAvailable config keys are:\n  " + config.keys.join("\n  "))
+			return null
+		}
+
+		if (type != null)
+			switch (type) {
+				case Bool#		: return val.toStr.toBool
+				case Duration#	: return Duration(val.toStr)
+				case Int#		: return val.toStr.toInt
+				case Str#		: return val.toStr
+				case Uri#		: return val.toStr.toUri
+			}
+		return val
+	}
+	
 	private Field:Obj? createPlan(Type type) {
 		plan := Field:Obj?[:]
 		type.fields.each |field| {
 			if (field.isStatic) return
 			if (field.hasFacet(Config#)) {
-				config := getConfig(field.name, field.type)
+				config := getConfig(field.name, field.type, field.type.isNullable.not)
 				if (config != null)	// allow default field values if config not provided
 					plan[field] = config
 			}
@@ -44,21 +65,6 @@
 				plan[field] = getOrBuildVal(field.type)
 		}
 		return plan
-	}
-	
-	private Obj? getConfig(Str name, Type type) {
-		key := name.contains(".") ? name : config.keys.find |key| { key.split('.').last == name }
-		val := key == null ? null : config[key]
-		
-		if (val == null)	  return null
-		switch (type) {
-			case Bool#		: return val.toStr.toBool
-			case Duration#	: return Duration(val.toStr)
-			case Int#		: return val.toStr.toInt
-			case Str#		: return val.toStr
-			case Uri#		: return val.toStr.toUri
-		}
-		return val
 	}
 	
 	private Obj? getOrBuildVal(Type type) {

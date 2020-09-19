@@ -4,7 +4,7 @@ class Build : BuildPod {
 
 	new make() {
 		podName = "afAppKit"
-		summary = "My Awesome appKit project"
+		summary = "A bit of a useful mess!"
 		version = Version("0.0.1")
 
 		meta = [

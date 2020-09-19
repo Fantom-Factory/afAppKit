@@ -31,6 +31,7 @@ using dom::Win
 		errHand	 := (ErrHandler) injector.get(ErrHandler#)
 		errHand.init
 
+		log.info("Initialising page: ${appType.qname}")
 		appPage  := injector.build(appType)
 		appPage.typeof.method("init", false)?.callOn(appPage, null)
 	}

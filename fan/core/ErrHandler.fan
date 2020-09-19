@@ -4,8 +4,8 @@ using dom::Win
 using concurrent::Actor
 
 @Js class ErrHandler {
-	@Config Str	errTitle 	:= "Shazbot! The computer reported an error!"
-	@Config Str	errMsg		:= "Don't worry, it's not your fault - it's ours!\n\nIf you drop us an email explaining what happened, we'll do our best to fix it.\n\nIn the mean time, feel free to refresh the page and try again.".replace("\n", "<br>")
+	@Config Str?	errTitle 	:= "Shazbot! The computer reported an error!"
+	@Config Str?	errMsg		:= "Don't worry, it's not your fault - it's ours!\n\nIf you drop us an email explaining what happened, we'll do our best to fix it.\n\nIn the mean time, feel free to refresh the page and try again.".replace("\n", "<br>")
 
 	new make(|This|? f := null) { f?.call(this) }
 
@@ -41,6 +41,11 @@ using concurrent::Actor
 				}
 			}			
 		}
+	}
+	
+	** Define |Obj| to utilise it-block funcs.
+	Void wrap(|Obj?| fn) {
+		wrapFn(fn)(null)
 	}
 	
 	** Define |Obj| to utilise it-block funcs.

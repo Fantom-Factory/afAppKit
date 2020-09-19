@@ -3,7 +3,7 @@ using afPickle::Pickle
 const class AppMain {
 	
 	** The URL where pod resources are served from.
-	const	Uri?	podBaseUrl	
+	const	Uri?	podBaseUrl
 	
 	new make(Uri? podBaseUrl) {
 		this.podBaseUrl	= podBaseUrl
