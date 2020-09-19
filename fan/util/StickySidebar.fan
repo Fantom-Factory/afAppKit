@@ -4,6 +4,8 @@ using dom::Win
 using graphics::Size
 using graphics::Point
 
+** StickySidebar, for when CSS sticky just isn't enough.
+** 
 ** pre>
 ** <div class="main-content">
 ** 
@@ -21,6 +23,10 @@ using graphics::Point
 ** <pre
 **  
 ** Adapted from `https://abouolia.github.io/sticky-sidebar/` and its Scrollable Sticky Element.
+** 
+** Updates:
+**  - '_reStyle' was never reset back to 'false' resulting in CSS styles being applied ALL the time.
+**  - 'calcDimensions()' calcs width and height from 'sidebar', not 'sidebarInner', and width is manually set on 'sidebarInner' when scrolling! 
 @Js class StickySidebar {
 	
 	static const Str:Obj? defOpts := [
@@ -86,29 +92,6 @@ using graphics::Point
 			this._breakpoint	= false
 		}
 	}
-
-	** Calculates dimensions of sidebar, container and screen viewpoint
-	private Void _calcDimensions() {
-		if (this._breakpoint) return
-		dims := this.dimensions
-	
-		// Container of sticky sidebar dimensions.
-		dims.containerTop		= offsetPoint(this.container).y
-		dims.containerHeight	= clientSize(this.container).h
-		dims.containerBottom	= dims.containerTop + dims.containerHeight
-	
-		// Sidebar dimensions.
-		dims.sidebarHeight		= this.sidebarInner.size.h
-		dims.sidebarWidth		= this.sidebar.size.w
-	
-		// Screen viewport dimensions.
-		dims.viewportHeight		= windowInnerSize.h
-	
-		// Maximum sidebar translate Y.
-		dims.maxTranslateY		= dims.containerHeight - dims.sidebarHeight
-	
-		this._calcDimensionsWithScroll()
-	}
 	
 	** Bind all events of sticky sidebar plugin.
 	private Void _bindEvents() {
@@ -123,6 +106,29 @@ using graphics::Point
 			resizeSensor(this.container) 	{ this.updateSticky(null) }
 			resizeSensor(this.sidebarInner)	{ this.updateSticky(null) }	
 		}
+	}
+
+	** Calculates dimensions of sidebar, container and screen viewpoint
+	private Void _calcDimensions() {
+		if (this._breakpoint) return
+		dims := this.dimensions
+	
+		// Container of sticky sidebar dimensions.
+		dims.containerTop		= offsetPoint(this.container).y
+		dims.containerHeight	= clientSize (this.container).h
+		dims.containerBottom	= dims.containerTop + dims.containerHeight
+	
+		// Sidebar dimensions. Slimer - updated from 'this.sidebarInner.size'
+		dims.sidebarHeight		= this.sidebar.size.h
+		dims.sidebarWidth		= this.sidebar.size.w
+	
+		// Screen viewport dimensions.
+		dims.viewportHeight		= windowInnerSize.h
+	
+		// Maximum sidebar translate Y.
+		dims.maxTranslateY		= dims.containerHeight - dims.sidebarHeight
+	
+		this._calcDimensionsWithScroll()
 	}
 	
 	** Some dimensions values need to be up-to-date when scrolling the page.
@@ -163,32 +169,6 @@ using graphics::Point
 		dims	:= this.dimensions
 		offset	:= this.scrollDirection == "down" ? dims.lastBottomSpacing : dims.lastTopSpacing
 		return this.dimensions.sidebarHeight + offset < this.dimensions.viewportHeight
-	}
-
-	** Gets affix type of sidebar according to current scroll top and scrolling direction.
-	private Str _getAffixType() {
-		this._calcDimensionsWithScroll()
-		dims		:= this.dimensions
-		colliderTop	:= dims.viewportTop + dims.topSpacing
-		affixType	:= this.affixedType
-
-		if (colliderTop <= dims.containerTop || dims.containerHeight <= dims.sidebarHeight) {
-			dims.translateY = 0f
-			affixType = "STATIC"
-
-		} else {
-			affixType = ("up" == this.direction)
-				? this._getAffixTypeScrollingUp()
-				: this._getAffixTypeScrollingDown()
-		}
-
-		// Make sure the translate Y is not bigger than container height.
-		dims.translateY = dims.translateY.max(0f)
-		dims.translateY = dims.translateY.min(dims.containerHeight)
-		dims.translateY = dims.translateY.round
-
-		dims.lastViewportTop = dims.viewportTop
-		return affixType
 	}
 
 	** Cause the sidebar to be sticky according to affix type by adding inline
@@ -234,6 +214,32 @@ using graphics::Point
 		this._reStyle	 = false
 	}
 	
+	** Gets affix type of sidebar according to current scroll top and scrolling direction.
+	private Str _getAffixType() {
+		this._calcDimensionsWithScroll()
+		dims		:= this.dimensions
+		colliderTop	:= dims.viewportTop + dims.topSpacing
+		affixType	:= this.affixedType
+
+		if (colliderTop <= dims.containerTop || dims.containerHeight <= dims.sidebarHeight) {
+			dims.translateY = 0f
+			affixType = "STATIC"
+
+		} else {
+			affixType = ("up" == this.direction)
+				? this._getAffixTypeScrollingUp()
+				: this._getAffixTypeScrollingDown()
+		}
+
+		// Make sure the translate Y is not bigger than container height.
+		dims.translateY = dims.translateY.max(0f)
+		dims.translateY = dims.translateY.min(dims.containerHeight)
+		dims.translateY = dims.translateY.round
+
+		dims.lastViewportTop = dims.viewportTop
+		return affixType
+	}
+	
 	** Get affix type while scrolling down.
 	private Str _getAffixTypeScrollingDown() {
 		dims			:= this.dimensions
@@ -261,7 +267,7 @@ using graphics::Point
 				dims.translateY = colliderBottom - sidebarBottom
 				affixType = "VIEWPORT-BOTTOM"
 	
-			} else if (dims.containerTop + dims.translateY <= colliderTop && (dims.translateY > 0f && dims.translateY < dims.maxTranslateY)) {
+			} else if (dims.containerTop + dims.translateY < colliderTop && (dims.translateY > 0f && dims.translateY < dims.maxTranslateY)) {
 				affixType = "VIEWPORT-UNBOTTOM"
 			}
 		}
@@ -287,7 +293,7 @@ using graphics::Point
 	
 		} else if (!this._isSidebarFitsViewport) {
 	
-			if (dims.containerTop <= colliderTop && (dims.translateY > 0f && dims.translateY < dims.maxTranslateY)) {
+			if (dims.containerTop < colliderTop && (dims.translateY > 0f && dims.translateY < dims.maxTranslateY)) {
 				affixType = "VIEWPORT-UNBOTTOM"
 			}
 		}
