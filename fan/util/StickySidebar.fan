@@ -4,7 +4,7 @@ using dom::Win
 using graphics::Size
 using graphics::Point
 
-** <!-- container -->
+** pre>
 ** <div class="main-content">
 ** 
 **     <div class="sidebar">
@@ -18,11 +18,10 @@ using graphics::Point
 **     </div>
 ** 
 ** </div>
-** 
+** <pre
+**  
 ** Adapted from `https://abouolia.github.io/sticky-sidebar/` and its Scrollable Sticky Element.
 @Js class StickySidebar {
-	
-	private static const Str EVENT_KEY	:= ".stickySidebar"
 	
 	static const Str:Obj? defOpts := [
 		"topSpacing"			: 0f,					// Numeric|Function
@@ -112,20 +111,17 @@ using graphics::Point
 		this._calcDimensionsWithScroll()
 	}
 	
-	
 	** Bind all events of sticky sidebar plugin.
 	private Void bindEvents() {
 		Win.cur.onEvent("resize", false) { this.updateSticky(it) }
 		Win.cur.onEvent("scroll", false) { this.updateSticky(it) }
 		
-		// TODO WTF is this?
-		this.sidebar.onEvent("update" + EVENT_KEY, false) { this.updateSticky(it) }
-//		this.sidebar.addEventListener("update" + EVENT_KEY, this);
-		
-//		if (this.options.resizeSensor && "undefined" !== typeof ResizeSensor) {
-//			new ResizeSensor(this.sidebarInner, this.handleEvent);
-//			new ResizeSensor(this.container, this.handleEvent);
-//		}
+		try	ResizeObserver() |entries| {
+				this.updateSticky(null)
+			}.observe(this.container).observe(this.sidebarInner)
+		catch {
+			typeof.pod.log.warn("ResizeObserver not supported")
+		}
 	}
 	
 	** Some dimensions values need to be up-to-date when scrolling the page.
@@ -208,8 +204,6 @@ using graphics::Point
 		style			:= this._getStyle(affixType)
 
 		if (this.affixedType != affixType || force) {
-			affixEvent	:= "affix." + affixType.lower.replace("viewport-", "") + EVENT_KEY
-			eventTrigger(this.sidebar, affixEvent)
 	
 			if ("STATIC" == affixType)
 				this.sidebar.style.removeClass(this.options["stickyClass"])
@@ -227,9 +221,6 @@ using graphics::Point
 				val := obj is Num ? "${obj}px" : obj.toStr
 				this.sidebarInner.style.trap(key, [val])
 			}
-
-			affixedEvent := "affixed." + affixType.lower.replace("viewport-", "") + EVENT_KEY
-			eventTrigger(this.sidebar, affixedEvent)
 
 		} else {
 			inner	:= (Str:Obj?) style["inner"]
@@ -362,12 +353,14 @@ using graphics::Point
 
 	** Switches between functions stack for each event type, if there's no
 	** event, it will re-initialize sticky sidebar.
-	private Void updateSticky(Event e) {
+	private Void updateSticky(Event? event) {
 		if (this._running) return
 		this._running = true
 
+		eventType := event?.type ?: "resize"
+		
 		Win.cur.reqAnimationFrame {
-			switch (e.type) {
+			switch (eventType) {
 				// When browser is scrolling and re-calculate just dimensions
 				// within scroll.
 				case "scroll":
@@ -434,18 +427,6 @@ using graphics::Point
 	private native static Point offsetPoint(Elem elem)
 
 	private native static Point docScrollPoint()
-
-	** Trigger custom event.
-	** @param {DOMObject} element - Target element on the DOM.
-	static Void eventTrigger(Elem element, Str eventName, Str:Obj? data := Str:Obj?[:]) {
-//		try {
-//			var event = new CustomEvent(eventName, {detail: data});
-//		} catch(e){
-//			var event = document.createEvent('CustomEvent');
-//			event.initCustomEvent(eventName, true, true, data);
-//		}
-//		element.dispatchEvent(event);
-	}
 }
 
 @Js internal class StickySidebarDims {
