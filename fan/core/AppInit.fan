@@ -22,7 +22,7 @@ using dom::Win
 	virtual Type:Obj iocObjs() { Type:Obj?[:] }
 
 	@NoDoc
-	Void doInit(Type appType, Type:Obj iocObjs, Str:Obj? config) {
+	MiniIoc doInit(Type appType, Type:Obj iocObjs, Str:Obj? config) {
 		appNom := config["appName"	 ]?.toStr ?: AppInit#.pod.name
 		appVer := config["appVersion"]?.toStr ?: AppInit#.pod.version.toStr
 		logLogo(appNom, appVer)
@@ -33,7 +33,11 @@ using dom::Win
 
 		log.info("Initialising page: ${appType.qname}")
 		appPage  := injector.build(appType)
-		appPage.typeof.method("init", false)?.callOn(appPage, null)
+		
+		try appPage.typeof.method("init", false)?.callOn(appPage, null)
+		catch (Err err) errHand.onError(err)
+
+		return injector
 	}
 
 	Void logLogo(Str name, Str ver) {
