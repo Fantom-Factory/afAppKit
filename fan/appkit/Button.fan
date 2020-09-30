@@ -37,7 +37,8 @@ using graphics::Point
 	private Void init() {
 		elem.style.addClass("appkit-control appkit-control-button appkit-button")
 		
-		this.onEvent("mousedown", false) |e| {
+		this.onEvent("mousedown", false) |Event e| {
+			if (e.button != 0) return	// left button only
 			e.stop
 			if (!enabled) return
 			this._event = e
@@ -46,6 +47,7 @@ using graphics::Point
 		}
 
 		this.onEvent("mouseup", false) |e| {
+			if (e.button != 0) return	// left button only
 			if (!enabled) return
 			this._event = e
 			doMouseUp
