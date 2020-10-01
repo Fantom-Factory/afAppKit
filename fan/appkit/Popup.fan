@@ -22,6 +22,8 @@ using graphics::Point
 **       button.appkit-button (type="button") Click Me
 **       div.appkit-popup Hello!
 ** 
+** Use 'div.appkit-popup.appkit-fixed' if popups are in sticky headers, so it also sticks to the top
+** 
 @Js class Popup {
 
 	Elem elem { private set }
@@ -80,25 +82,27 @@ using graphics::Point
 		body.add(mask = Elem {
 			it.style.addClass("appkit-popup-mask")
 			
-			/*
-			it.style->position	= "absolute"
-			it.style->top		= "0"
-			it.style->left		= "0"
-			it.style->width		= "100%"
-			it.style->height	= "100%"
-			it.style->zIndex	= "100"
-			*/
-			
-			/*
-			div.domkit-Popup-mask {
+			/*div.domkit-Popup-mask {
 				position: absolute;
 				top		: 0;
 				left	: 0;
 				width	: 100%;
 				height	: 100%;
-				z-index	: 100;
+				z-index	: 1000;
+			}*/
+			
+			it.style->position	= "absolute"
+			it.style->top		= "0"
+			it.style->left		= "0"
+			it.style->width		= "100%"
+			it.style->height	= "100%"
+			it.style->zIndex	= "1000"	// you may want to override this...
+			
+			if (this.elem.style.hasClass("appkit-fixed")) {
+				it.style.addClass("position-fixed")
+				it.style->position	= "fixed"
 			}
-			*/
+
 
 			it.onEvent("mousedown", false) |e| {
 				if (e.target == elem || elem.containsChild(e.target)) return
@@ -167,8 +171,8 @@ using graphics::Point
 
 		// refresh size
 		sz = elem.size
-		if ((x + sz.w + gutter) > vp.w) elem.style->left = "${vp.w - sz.w - gutter}px"
-		if ((y + sz.h + gutter) > vp.h) elem.style->top	 = "${vp.h - sz.h - gutter}px"
+		if ((x + sz.w + gutter) > vp.w) elem.style->left	= "${vp.w - sz.w - gutter}px"
+		if ((y + sz.h + gutter) > vp.h) elem.style->top		= "${vp.h - sz.h - gutter}px"
 	}
 
 	** Protected sub-class callback invoked directly before popup is visible.
