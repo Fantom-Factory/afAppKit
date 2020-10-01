@@ -68,9 +68,9 @@ using graphics::Point
 		this.onEvent("keydown", false) |e| {
 			if (!enabled) return
 			_event = e
-			if (e.key == Key.space) {
 			// TODO ListButton
-//			if (e.key == Key.space || (this is ListButton && e.key == Key.down)) {
+ //			if (e.key == Key.space || (this is ListButton && e.key == Key.down)) {
+			if (e.key == Key.space) {
 				doMouseDown
 				if (cbPopup == null) Win.cur.setTimeout(100ms) |->| { fireAction(e); doMouseUp }
 				else {

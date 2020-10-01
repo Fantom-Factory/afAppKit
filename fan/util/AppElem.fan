@@ -24,7 +24,8 @@ using dom::Win
 
 		appObj := elem.prop("appkit-elem")
 		if (appObj != null && !appObj.typeof.fits(type))
-			return checked ? throw ArgErr("AppElem is not ${type.name}: ${appObj.typeof.qname}\n${elem.html}") : null
+			throw ArgErr("AppElem is not ${type.name}: ${appObj.typeof.qname}\n${elem.html}")
+//			return checked ? throw ArgErr("AppElem is not ${type.name}: ${appObj.typeof.qname}\n${elem.html}") : null
 
 		return appObj
 	}

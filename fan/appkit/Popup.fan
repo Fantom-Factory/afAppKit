@@ -30,8 +30,9 @@ using graphics::Point
 		this.elem = elem
 
 		// don't know why a Popup *wouldn't* be a div?
-		if (elem.tagName != "div")
-			throw ArgErr("Elem not div: ${elem.html}")
+		// actually, sometimes it NEEDs to be span (as div's can NOT be inside <a>)
+		if (elem.tagName != "div" && elem.tagName != "span")
+			throw ArgErr("Popup elem not div: ${elem.html}")
 
 		init()
 	}
@@ -161,13 +162,13 @@ using graphics::Point
 
 		// adjust if outside viewport
 		vp := Win.cur.viewport
-		if (sz.w + gutter + gutter > vp.w) elem.style->width  = "${vp.w-gutter-gutter}px"
-		if (sz.h + gutter + gutter > vp.h) elem.style->height = "${vp.h-gutter-gutter}px"
+		if (sz.w + gutter + gutter > vp.w) elem.style->width  = "${vp.w - gutter - gutter}px"
+		if (sz.h + gutter + gutter > vp.h) elem.style->height = "${vp.h - gutter - gutter}px"
 
 		// refresh size
 		sz = elem.size
-		if ((x + sz.w + gutter) > vp.w) elem.style->left = "${vp.w-sz.w-gutter}px"
-		if ((y + sz.h + gutter) > vp.h) elem.style->top	 = "${vp.h-sz.h-gutter}px"
+		if ((x + sz.w + gutter) > vp.w) elem.style->left = "${vp.w - sz.w - gutter}px"
+		if ((y + sz.h + gutter) > vp.h) elem.style->top	 = "${vp.h - sz.h - gutter}px"
 	}
 
 	** Protected sub-class callback invoked directly before popup is visible.

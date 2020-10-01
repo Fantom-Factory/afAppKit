@@ -11,7 +11,7 @@ using dom::Elem
 		this.elem = elem
 
 		if (elem.tagName != "a")
-			throw ArgErr("Elem not an anchor: ${elem.html}")
+			throw ArgErr("Link elem not an anchor: ${elem.html}")
 	}
 
 	static new fromSelector(Str selector, Bool checked := true) {

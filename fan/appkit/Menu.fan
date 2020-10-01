@@ -51,7 +51,9 @@ using graphics::Point
 
 			// bubble to MenuItem
 			Elem? t := e.target
-			while (t != null && MenuItem(t, false) == null) t = t?.parent
+			// SlimerDude - this "makes" every class a MenuItem - not sure what it is we're doing here
+//			while (t != null && MenuItem(t, false) == null) t = t?.parent
+			while (t != null && t.style.hasClass("dropdown-item")) t = t?.parent
 			if (t == null) { select(null); return }
 
 			// check for selection

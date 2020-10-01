@@ -14,7 +14,7 @@ using dom::Key
 
 		if (elem.tagName != "input" && elem.tagName != "textarea")
 			// note the "type" attr may be blank, text, email, number, ...  
-			throw ArgErr("Elem not an input: ${elem.html}")
+			throw ArgErr("TextField elem not an input: ${elem.html}")
 	
 		init()
 	}

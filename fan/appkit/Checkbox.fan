@@ -12,7 +12,7 @@ using dom::Event
 		this.elem = elem
 
 		if (elem.tagName != "input" && elem["type"] != "checkbox")
-			throw ArgErr("Elem not an input checkbox: ${elem.html}")
+			throw ArgErr("Checkbox elem not an input checkbox: ${elem.html}")
 
 		init()
 	}
