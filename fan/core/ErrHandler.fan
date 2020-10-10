@@ -43,22 +43,31 @@ using concurrent::Actor
 		}
 	}
 	
-	** Define |Obj| to utilise it-block funcs.
-	Void wrap(|Obj?| fn) {
+	** Executes the given 'fn' inside the ErrHandler.
+	** 
+	** Defines |Obj| to utilise it-block funcs.
+	Void wrap(|Obj?|? fn) {
+		if (fn == null) return
 		wrapFn(fn)(null)
 	}
 	
-	** Define |Obj| to utilise it-block funcs.
-	|Obj?| wrapFn(|Obj?| fn) {
-		|Obj? arg| {
+	** Returns a 'fn', that when called, executes inside the ErrHandler.
+	** 
+	** Defines |Obj| to utilise it-block funcs.
+	|Obj?|? wrapFn(|Obj?|? fn) {
+		if (fn == null) return null
+		return |Obj? arg| {
 			try	fn(arg)
 			catch (Err err)	onError(err)
 		}
 	}
 
-	** Define |Obj| to utilise it-block funcs.
-	|Obj? arg -> Obj?| wrapObjFn(|Obj?->Obj?| fn) {
-		|Obj? arg -> Obj?| {
+	** Returns a 'fn', that when called, executes inside the ErrHandler.
+	** 
+	** Defines |Obj| to utilise it-block funcs.
+	|Obj? arg -> Obj?|? wrapObjFn(|Obj?->Obj?|? fn) {
+		if (fn == null) return null
+		return |Obj? arg -> Obj?| {
 			try	return fn(arg)
 			catch (Err err) {
 				onError(err)
