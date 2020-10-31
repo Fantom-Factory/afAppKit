@@ -1,5 +1,6 @@
 using dom::Elem
 using dom::Event
+using dom::Style
 
 **
 ** Checkbox displays a checkbox that can be toggled on and off.
@@ -33,6 +34,9 @@ using dom::Event
 		}
 	}
 	
+	** Get the Style instance for this element.
+	Style style() { elem.style }
+
 	** The enabled attribute.
 	Bool enabled {
 		get { elem->disabled->not }

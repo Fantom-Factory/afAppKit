@@ -2,6 +2,7 @@ using dom::Elem
 using dom::Event
 using dom::Key
 using dom::Win
+using dom::Style
 using graphics::Point
 
 **
@@ -81,6 +82,9 @@ using graphics::Point
 		}
 	}
 
+	** Get the Style instance for this element.
+	Style style() { elem.style }
+	
 	** Callback when button action is invoked.
 	Void onAction(|This| f) { this.cbAction = ErrHandler.instance.wrapFn(f) }
 

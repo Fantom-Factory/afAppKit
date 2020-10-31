@@ -1,6 +1,7 @@
 using dom::Elem
 using dom::Event
 using dom::Key
+using dom::Style
 
 **
 ** Text field input element.
@@ -39,6 +40,9 @@ using dom::Key
 			if (e.key == Key.enter) fireAction(e)
 		}
 	}
+
+	** Get the Style instance for this element.
+	Style style() { elem.style }
 
 	** The enabled attribute.
 	Bool enabled {

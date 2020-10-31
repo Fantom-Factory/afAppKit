@@ -1,4 +1,5 @@
 using dom::Elem
+using dom::Style
 
 **
 ** Hyperlink anchor element
@@ -21,6 +22,9 @@ using dom::Elem
 	static new fromElem(Elem? elem, Bool checked := true) {
 		AppElem.fromElem(elem, Link#, checked)
 	}
+
+	** Get the Style instance for this element.
+	Style style() { elem.style }
 
 	** The target attribute specifies where to open the linked document.
 	Str target {
