@@ -74,7 +74,7 @@ using afAppKit::ErrHandler
 	}
 
 	** Callback when value is modified by user.
-	Void onModify(|This| f) { this.cbModify = ErrHandler.instance.wrapFn(f) }
+	Void onModify(|This|? f) { this.cbModify = ErrHandler.instance.wrapFn(f) }
 
 	** Select given range of text
 	Void select(Int start, Int end) {
