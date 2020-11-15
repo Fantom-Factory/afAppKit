@@ -54,7 +54,7 @@ using graphics::Point
 			doMouseUp
 			if (mouseDown) {
 				fireAction(e)
-				openPopup
+				openPopup(cbPopup?.call(this))
 			}
 			mouseDown = false
 		}
@@ -76,7 +76,7 @@ using graphics::Point
 				if (cbPopup == null) Win.cur.setTimeout(100ms) |->| { fireAction(e); doMouseUp }
 				else {
 					if (popup?.isOpen == true) popup.close
-					else openPopup
+					else openPopup(cbPopup?.call(this))
 				}
 			}
 		}
@@ -100,8 +100,9 @@ using graphics::Point
 	@NoDoc Void removeOnPopup() { this.cbPopup = null }
 
 	** Programmatically open popup, or do nothing if no popup defined.
-	Void openPopup() {
-		if (cbPopup == null) return
+	Void openPopup(Popup? popup) {
+		this.popup = popup
+		if (popup == null) return
 		if (popup?.isOpen == true) return
 
 		x := elem.pagePos.x + popupOffset.x
@@ -116,9 +117,6 @@ using graphics::Point
 		}
 
 		showDown
-		popup = cbPopup(this)
-		// popup is null if cbPopup err'ed - Slimer
-		if (popup == null) return
 
 		// adjust popup origin if haligned
 		switch (popup.halign) {
