@@ -98,11 +98,14 @@ using graphics::Point
 			it.style->height	= "100%"
 			it.style->zIndex	= "1000"	// you may want to override this...
 			
-			if (this.elem.style.hasClass("appkit-fixed")) {
+			// todo - Sigh - need a better positioning lib - maybe use Popper? 
+			// in Andy's app world - everything is fixed relative to the mask
+			// but this is NOT the case when it comes to real world web pages - sigh
+			// to see the effect, scroll down, then popup a drop down, and scroll some more
+//			if (this.elem.style.hasClass("appkit-fixed")) {
 				it.style.addClass("position-fixed")
 				it.style->position	= "fixed"
-			}
-
+//			}
 
 			it.onEvent("mousedown", false) |e| {
 				if (e.target == elem || elem.containsChild(e.target)) return
