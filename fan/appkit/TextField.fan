@@ -98,6 +98,33 @@ using dom::Style
 		set { elem->value = it; checkUpdate }
 	}
 
+	Bool required {
+		get { elem->required }
+		set { elem->required = it }
+	}
+
+	Int min {
+		get { elem->min?.toStr?.toInt ?: 0 }
+		set { elem->min = it.toStr }
+	}
+
+	Int max {
+		get { elem->max?.toStr?.toInt ?: 0 }
+		set { elem->max = it.toStr }
+	}
+
+	Int minLength {
+		// never tried this - I hope it works!?
+		get { elem->minlength }
+		set { elem->minlength = it }
+	}
+
+	Int maxLength {
+		// never tried this - I hope it works!?
+		get { elem->maxlength }
+		set { elem->maxlength = it }
+	}
+	
 	** Callback when value is modified by user.
 	Void onModify(|This|? f) { this.cbModify = ErrHandler.instance.wrapFn(f) }
 
