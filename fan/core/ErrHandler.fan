@@ -4,10 +4,18 @@ using dom::Win
 using concurrent::Actor
 
 @Js class ErrHandler {
+	// MiniIoc still picks up config for afAppKit.errTitle
 	@Config Str?	errTitle 	:= "Shazbot! The computer reported an error!"
 	@Config Str?	errMsg		:= "Don't worry, it's not your fault - it's ours!\n\nIf you drop us an email explaining what happened, we'll do our best to fix it.\n\nIn the mean time, feel free to refresh the page and try again.".replace("\n", "<br>")
 
-	new make(|This|? f := null) { f?.call(this) }
+	new make(|This|? f := null) {
+		f?.call(this)
+		
+		// let static field qnames also be injected
+		// it's a "little" fudge but does let us define err msgs in JS code 
+		errTitle = findStr(errTitle)
+		errMsg	 = findStr(errMsg)
+	}
 
 	Void init() {
 		Actor.locals["appKit.errHandler"] = this
@@ -86,4 +94,16 @@ using concurrent::Actor
 	}
 
 	virtual Log	log() { this.typeof.pod.log }
+	
+	private Str findStr(Str str) {
+		// check if str *looks* like a qname
+		if (str.contains("::") && str.contains(".") && !str.contains(" ")) {
+			field := Field.findField(str, false)
+			if (field != null)
+				str = field.get(null).toStr
+			else
+				log.warn("Could not resolve field for err string: $str")
+		}
+		return str
+	}
 }
