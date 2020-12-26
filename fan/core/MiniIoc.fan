@@ -95,5 +95,5 @@
 	}
 }
 
-@Js internal facet class Inject {}
-@Js internal facet class Config {}
+@Js facet class Inject {}
+@Js facet class Config {}

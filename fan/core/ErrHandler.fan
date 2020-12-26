@@ -4,17 +4,18 @@ using dom::Win
 using concurrent::Actor
 
 @Js class ErrHandler {
-	// MiniIoc still picks up config for afAppKit.errTitle
-	@Config Str?	errTitle 	:= "Shazbot! The computer reported an error!"
-	@Config Str?	errMsg		:= "Don't worry, it's not your fault - it's ours!\n\nIf you drop us an email explaining what happened, we'll do our best to fix it.\n\nIn the mean time, feel free to refresh the page and try again.".replace("\n", "<br>")
-
+	// MiniIoc will inject config for "afAppKit.clientErrTitle"
+	@Config Str?	clientErrTitle 	:= "Shazbot! The computer reported an error!"
+	@Config Str?	clientErrMsg	:= "Don't worry, it's not your fault - it's ours!\n\nRefresh the page and try again.".replace("\n", "<br>")
+	
 	new make(|This|? f := null) {
 		f?.call(this)
 		
 		// let static field qnames also be injected
-		// it's a "little" fudge but does let us define err msgs in JS code 
-		errTitle = findStr(errTitle)
-		errMsg	 = findStr(errMsg)
+		// it's a "little" fudge but does let us define err msgs in JS code
+		// I'd like to set them via Actors, like DomJax, but it's too chicken + egg
+		clientErrTitle	= findStr(clientErrTitle)
+		clientErrMsg	= findStr(clientErrMsg)
 	}
 
 	Void init() {
@@ -86,7 +87,7 @@ using concurrent::Actor
 
 	virtual Void onError(Err? cause := null) {
 		log.err("As caught by ErrHandler", cause)
-		openModal(errTitle, errMsg)
+		openModal(clientErrTitle, clientErrMsg)
 	}
 	
 	virtual Void openModal(Str title, Obj body) {
