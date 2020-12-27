@@ -139,6 +139,9 @@ using graphics::Point
 			
 			mask?.parent?.remove(mask)
 			fireClose(null)
+			
+			// remove all manual styling so menu may be re-used in mobile
+			elem.style.clear
 		}
 	}
 
