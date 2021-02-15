@@ -35,7 +35,7 @@ using dom::Win
 		elem.onEvent(type, useCapture) |e| {
 			try handler(e)
 			catch (Err err)
-				ErrHandler.instance.onError(err)
+				AppKitErrHandler.instance.onError(err)
 		}
 	}
 }

@@ -1,6 +1,6 @@
 using afPickle::Pickle
 
-const class AppMain {
+const class AppKitMain {
 	
 	** The URL where pod resources are served from.
 	const	Uri?	podBaseUrl
@@ -10,12 +10,12 @@ const class AppMain {
 	}
 	
 	Str render(Type pageType, Str:Obj? pageConfig) {
-		args	:= [pageType, pageConfig]
-		argStrs	:= args.map |arg| { Pickle.writeObj(arg) }
-		jargs	:= argStrs.map |Str arg->Str| { "args.add(${arg.toCode});" }
-		podBase	:= podBaseUrl == null ? "" : "fan.sys.UriPodBase = '${podBaseUrl}';"
+		args		:= [pageType, pageConfig]
+		argStrs		:= args.map |arg| { Pickle.writeObj(arg) }
+		jargs		:= argStrs.map |Str arg->Str| { "args.add(${arg.toCode});" }
+		podBase		:= podBaseUrl == null ? "" : "fan.sys.UriPodBase = '${podBaseUrl}';"
+		pageMethod	:= AppKitBoot#init
 
-		pageMethod := AppInit#init
 		return 
 			"fan.sys.TimeZone.m_cur = fan.sys.TimeZone.fromStr('UTC');
 			 ${podBase}

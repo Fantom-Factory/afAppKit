@@ -3,12 +3,17 @@ using dom::Event
 using dom::Win
 using concurrent::Actor
 
-@Js class ErrHandler {
+@Js class AppKitErrHandler {
+	@Inject	Log		log
+
 	// MiniIoc will inject config for "afAppKit.clientErrTitle"
 	@Config Str?	clientErrTitle 	:= "Shazbot! The computer reported an error!"
 	@Config Str?	clientErrMsg	:= "Don't worry, it's not your fault - it's ours!\n\nRefresh the page and try again.".replace("\n", "<br>")
+	private	Func?	onErrFn
 	
 	new make(|This|? f := null) {
+		log				= this.typeof.pod.log
+
 		f?.call(this)
 		
 		// let static field qnames also be injected
@@ -16,16 +21,20 @@ using concurrent::Actor
 		// I'd like to set them via Actors, like DomJax, but it's too chicken + egg
 		clientErrTitle	= findStr(clientErrTitle)
 		clientErrMsg	= findStr(clientErrMsg)
+		onErrFn 		= onErrFn ?: |Str title, Str msg, Err cause| {
+			log.err("As caught by ErrHandler", cause)
+			openModal(title, msg)
+		}
 	}
 
 	Void init() {
-		Actor.locals["appKit.errHandler"] = this
+		Actor.locals["afAppKit.errHandler"] = this
 	}
-	
-	static ErrHandler instance() {
-		Actor.locals["appKit.errHandler"]
+
+	static AppKitErrHandler instance() {
+		Actor.locals["afAppKit.errHandler"]
 	}
-	
+
 	Void onClick(Obj? obj, |Event, Elem| fn) {
 		onEvent("click", obj, fn)
 	}
@@ -50,6 +59,14 @@ using concurrent::Actor
 				}
 			}			
 		}
+	}
+	
+	Int onTimeout(Duration delay, |Win| fn) {
+		Win.cur.setTimeout(delay, wrapFn(fn))
+	}
+	
+	Void setErrHandler(|Str title, Str msg, Err cause|? fn) {
+		this.onErrFn = fn
 	}
 	
 	** Executes the given 'fn' inside the ErrHandler.
@@ -86,16 +103,13 @@ using concurrent::Actor
 	}
 
 	virtual Void onError(Err? cause := null) {
-		log.err("As caught by ErrHandler", cause)
-		openModal(clientErrTitle, clientErrMsg)
+		onErrFn?.call(clientErrTitle, clientErrMsg, cause)
 	}
 	
 	virtual Void openModal(Str title, Obj body) {
 		Modal.createErrDialog(title, body).open
 	}
 
-	virtual Log	log() { this.typeof.pod.log }
-	
 	private Str findStr(Str str) {
 		// check if str *looks* like a qname
 		if (str.contains("::") && str.contains(".") && !str.contains(" ")) {

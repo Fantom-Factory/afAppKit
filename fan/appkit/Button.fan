@@ -86,10 +86,10 @@ using graphics::Point
 	Style style() { elem.style }
 	
 	** Callback when button action is invoked.
-	Void onAction(|This|? f) { this.cbAction = ErrHandler.instance.wrapFn(f) }
+	Void onAction(|This|? f) { this.cbAction = AppKitErrHandler.instance.wrapFn(f) }
 
 	** Callback to create Popup to display when button is pressed.
-	Void onPopup(|Button->Popup|? f) { this.cbPopup = ErrHandler.instance.wrapObjFn(f) }
+	Void onPopup(|Button->Popup|? f) { this.cbPopup = AppKitErrHandler.instance.wrapObjFn(f) }
 
 	** Offset to apply to default origin for `onPopup`.
 	@NoDoc Point popupOffset := Point.defVal

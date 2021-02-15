@@ -5,7 +5,7 @@ class Build : BuildPod {
 	new make() {
 		podName = "afAppKit"
 		summary = "A bit of a useful mess!"
-		version = Version("0.0.6")
+		version = Version("0.1.0")
 
 		meta = [
 			"pod.dis"		: "App Kit",

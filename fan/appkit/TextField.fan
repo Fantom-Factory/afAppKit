@@ -126,10 +126,10 @@ using dom::Style
 	}
 	
 	** Callback when value is modified by user.
-	Void onModify(|This|? f) { this.cbModify = ErrHandler.instance.wrapFn(f) }
+	Void onModify(|This|? f) { this.cbModify = AppKitErrHandler.instance.wrapFn(f) }
 
 	** Callback when 'enter' key is pressed.
-	Void onAction(|This|? f) { this.cbAction = ErrHandler.instance.wrapFn(f) }
+	Void onAction(|This|? f) { this.cbAction = AppKitErrHandler.instance.wrapFn(f) }
 
 	** Select given range of text
 	Void select(Int start, Int end) {

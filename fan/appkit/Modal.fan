@@ -224,17 +224,17 @@ using dom::CssDim
 	** Callback when a key is pressed while Dialog is open, including
 	** events that where dispatched outside the dialog.
 	Void onKeyDown(|Event e|? newFn) {
-		cbKeyDown = ErrHandler.instance.wrapFn(newFn)
+		cbKeyDown = AppKitErrHandler.instance.wrapFn(newFn)
 	}
 	
 	** Callback when dialog is opened.
 	Void onOpened(|This|? newFn) {
-		cbOpened = ErrHandler.instance.wrapFn(newFn)
+		cbOpened = AppKitErrHandler.instance.wrapFn(newFn)
 	}
 
 	** Callback when popup is closed.
 	Void onClosed(|This|? newFn) {
-		cbClosed = ErrHandler.instance.wrapFn(newFn)
+		cbClosed = AppKitErrHandler.instance.wrapFn(newFn)
 		// this is actually unhelpful - but if ever needed, should be called addOnClosed()  
 //		oldFn := cbClosed
 //		cbClosed = oldFn == null ? newFn : |Modal th| { oldFn(th); newFn(th) }

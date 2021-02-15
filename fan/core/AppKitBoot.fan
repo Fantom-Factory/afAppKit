@@ -3,7 +3,7 @@ using dom::Elem
 using dom::Doc
 using dom::Win
 
-@Js class AppInit {
+@Js class AppKitBoot {
 
 	** This is the main entry point to the Js App
 	virtual Void init(Str appTypeStr, Str configStr) {
@@ -23,12 +23,12 @@ using dom::Win
 
 	@NoDoc
 	MiniIoc doInit(Type appType, Type:Obj iocObjs, Str:Obj? config) {
-		appNom := config["appName"	 ]?.toStr ?: AppInit#.pod.name
-		appVer := config["appVersion"]?.toStr ?: AppInit#.pod.version.toStr
+		appNom := config["appName"	 ]?.toStr ?: AppKitBoot#.pod.name
+		appVer := config["appVersion"]?.toStr ?: AppKitBoot#.pod.version.toStr
 		logLogo(appNom, appVer)
 
 		injector := MiniIoc(iocObjs, config)
-		errHand	 := (ErrHandler) injector.get(ErrHandler#)
+		errHand	 := (AppKitErrHandler) injector.get(AppKitErrHandler#)
 		errHand.init
 
 		log.info("Initialising page: ${appType.qname}")
