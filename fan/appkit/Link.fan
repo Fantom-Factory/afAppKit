@@ -33,8 +33,15 @@ using dom::Style
 	}
 
 	** URI to hyperlink to.
+	@Deprecated
 	Uri url {
 		get { Uri.decode(elem->href ?: "") }
+		set { elem->href = it.encode }
+	}
+
+	** URI to hyperlink to.
+	Uri href {
+		get { Uri.decode(elem->href ?: "#") }
 		set { elem->href = it.encode }
 	}
 }
