@@ -36,7 +36,7 @@
 		key := name.contains(".") ? name : config.keys.find |key| { key.split('.').last == name }
 		val := key == null ? null : config[key]
 		
-		if (val == null && !config.containsKey(key)) {
+		if (val == null && (key == null || !config.containsKey(key))) {
 			if (checked) throw Err("Config key not found: $name\nAvailable config keys are:\n  " + config.keys.join("\n  "))
 			return null
 		}
