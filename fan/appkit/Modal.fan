@@ -17,7 +17,9 @@ using dom::CssDim
 	]
 	
 	private Elem? 	mask
+	private Func?	cbOpen
 	private Func?	cbOpened
+	private Func?	cbClose
 	private Func?	cbClosed
 	private Func?	cbKeyDown
 			Bool	isOpen { private set }
@@ -167,6 +169,8 @@ using dom::CssDim
 	}
 
 	This open() {
+		fireOnOpen	// this could return true to prevent the modal from showing...? meh.
+	
 		// we remove the body's scrollbar so the body can't be scrolled behind the modal
 		// but that makes the body wider and re-flows the content, so we add extra body padding to keep everything in place 
 		JsUtil.addScrollbarWidth(doc.body, "padding-right")
@@ -187,7 +191,7 @@ using dom::CssDim
 		
 		transitionFrom.each |val, prop| { elem.style[prop] = val }
 		elem.transition(transitionTo, ["transition-timing-function":"ease-out"], transistionDur) {
-			fireOpened	// this could return true to prevent the modal from showing...? meh.
+			fireOnOpened	// this could return true to prevent the modal from showing...? meh.
 			elem.focus
 		}
 
@@ -198,6 +202,8 @@ using dom::CssDim
 	Void close() {
 		// don't allow double closes - it results in an NPE
 		if (isOpen == false) return
+
+		fireOnClose
 
 		elem.transition(transitionFrom, ["transition-timing-function":"ease-in"], transistionDur) {
 			elem.style->display	= "none"
@@ -215,7 +221,7 @@ using dom::CssDim
 			mask = null
 			
 			// make sure the Modal closes before we fire the next handler
-			win.setTimeout(10ms) { fireClosed }
+			win.setTimeout(10ms) { fireOnClosed }
 		}
 
 		isOpen = false
@@ -227,12 +233,22 @@ using dom::CssDim
 		cbKeyDown = AppKitErrHandler.instance.wrapFn(newFn)
 	}
 	
-	** Callback when dialog is opened.
+	** Callback *before* dialog is opened.
+	Void onOpen(|This|? newFn) {
+		cbOpen = AppKitErrHandler.instance.wrapFn(newFn)
+	}
+
+	** Callback *after* dialog is opened.
 	Void onOpened(|This|? newFn) {
 		cbOpened = AppKitErrHandler.instance.wrapFn(newFn)
 	}
 
-	** Callback when popup is closed.
+	** Callback *before* dialog is closed.
+	Void onClose(|This|? newFn) {
+		cbClose = AppKitErrHandler.instance.wrapFn(newFn)
+	}
+	
+	** Callback *after* dialog is closed.
 	Void onClosed(|This|? newFn) {
 		cbClosed = AppKitErrHandler.instance.wrapFn(newFn)
 		// this is actually unhelpful - but if ever needed, should be called addOnClosed()  
@@ -245,8 +261,10 @@ using dom::CssDim
 		AppElem.onEvent(elem, type, useCapture, handler)
 	}
 
-	private Void fireOpened()	{ cbOpened?.call(this)	}
-	private Void fireClosed()	{ cbClosed?.call(this)	}
+	private Void fireOnOpen()	{ cbOpen	?.call(this) }
+	private Void fireOnOpened()	{ cbOpened	?.call(this) }
+	private Void fireOnClose()	{ cbClose	?.call(this) }
+	private Void fireOnClosed()	{ cbClosed	?.call(this) }
 	
 	private static Win win() { Win.cur }
 	private static Doc doc() { win.doc }

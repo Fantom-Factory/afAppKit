@@ -116,6 +116,9 @@ using graphics::Point
 			oldParent = elem.parent
 			elem.parent.remove(elem)
 			
+			// save our original parent on the elem so AppScope can trace the original tree
+			elem.setProp("afAppKit-parent", oldParent)
+			
 			it.add(elem)
 		})
 
@@ -136,6 +139,7 @@ using graphics::Point
 			// todo save the index also
 			elem.parent.remove(elem)
 			oldParent?.add(elem)
+			elem.setProp("afAppKit-parent", null)
 			
 			mask?.parent?.remove(mask)
 			fireClose(null)
