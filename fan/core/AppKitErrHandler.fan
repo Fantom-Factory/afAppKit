@@ -40,17 +40,7 @@ using concurrent::Actor
 	}
 
 	Void onEvent(Str type, Obj? obj, |Event, Elem| fn) {
-		if (obj == null) return
-
-		elems := null as Elem[]
-		if (elems == null && obj is List)
-			elems = obj
-		if (elems == null && obj is Elem)
-			elems = Elem[obj]
-		if (elems == null)
-			elems = Win.cur.doc.querySelectorAll(obj.toStr)
-
-		elems.each |elem| {
+		toElemList(obj).each |elem| {
 			elem.onEvent(type, false) |event| {
 				try fn(event, elem)
 				catch (Err cause) {
@@ -120,5 +110,19 @@ using concurrent::Actor
 				log.warn("Could not resolve field for err string: $str")
 		}
 		return str
+	}
+
+	private Elem[] toElemList(Obj? obj) {
+		if (obj == null) return Elem#.emptyList
+
+		elems := null as Elem[]
+		if (elems == null && obj is List)
+			elems = obj
+		if (elems == null && obj is Elem)
+			elems = Elem[obj]
+		if (elems == null)
+			elems = Win.cur.doc.querySelectorAll(obj.toStr)
+		
+		return elems
 	}
 }
