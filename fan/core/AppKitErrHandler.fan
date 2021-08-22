@@ -31,9 +31,12 @@ using concurrent::Actor
 		Actor.locals["afAppKit.errHandler"] = this
 	}
 
-	static AppKitErrHandler instance() {
+	static AppKitErrHandler cur() {
 		Actor.locals["afAppKit.errHandler"]
 	}
+
+	@NoDoc @Deprecated { msg="Use cur() instead." }
+	static AppKitErrHandler instance() { cur }
 
 	Void onClick(Obj? obj, |Event, Elem| fn) {
 		onEvent("click", obj, fn)
