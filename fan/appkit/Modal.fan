@@ -51,8 +51,8 @@ using dom::CssDim
 		}
 	}
 
-	static new fromSelector(Str selector) {
-		elem := doc.querySelector(selector)
+	static new fromSelector(Str? selector) {
+		elem := doc.querySelector(selector ?: "doesNotExist")
 		if (elem == null) throw Err("Could not find Modal: ${selector}")
 		return fromElem(elem)
 	}

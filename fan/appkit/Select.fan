@@ -20,7 +20,7 @@ using afAppKit::AppElem
 		init()
 	}
 
-	static new fromSelector(Str selector, Bool checked := true) {
+	static new fromSelector(Str? selector, Bool checked := true) {
 		AppElem.fromSelector(selector, Select#, checked)
 	}
 	

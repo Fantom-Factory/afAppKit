@@ -15,7 +15,7 @@ using dom::Style
 			throw ArgErr("Link elem not an anchor: ${elem.html}")
 	}
 
-	static new fromSelector(Str selector, Bool checked := true) {
+	static new fromSelector(Str? selector, Bool checked := true) {
 		AppElem.fromSelector(selector, Link#, checked)
 	}
 	

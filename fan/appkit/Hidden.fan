@@ -18,7 +18,7 @@ using dom::Key
 		init()
 	}
 
-	static new fromSelector(Str selector, Bool checked := true) {
+	static new fromSelector(Str? selector, Bool checked := true) {
 		AppElem.fromSelector(selector, Hidden#, checked)
 	}
 	

@@ -4,8 +4,8 @@ using dom::Win
 
 @Js internal class AppElem {
 	
-	static Obj? fromSelector(Str selector, Type type, Bool checked) {
-		elem := Win.cur.doc.querySelector(selector)
+	static Obj? fromSelector(Str? selector, Type type, Bool checked) {
+		elem := Win.cur.doc.querySelector(selector ?: "doesNotExist")
 		if (elem == null && checked) throw Err("Could not find ${type.name}: ${selector}")
 		return fromElem(elem, type, checked)
 	}
