@@ -73,7 +73,7 @@ using afAppKit::AppElem
 	}
 
 	** Callback when value is modified by user.
-	Void onModify(|This|? f) { this.cbModify = AppKitErrHandler.instance.wrapFn(f) }
+	Void onModify(|This|? f) { this.cbModify = AppKitErrHandler.cur.wrapFn(f) }
 
 	** Select given range of text
 	Void select(Int start, Int end) {

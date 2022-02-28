@@ -189,10 +189,10 @@ using graphics::Point
 	protected virtual Void onBeforeOpen() {}
 
 	** Callback when popup is opened.
-	Void onOpen(|This|? f) { cbOpen = AppKitErrHandler.instance.wrapFn(f) }
+	Void onOpen(|This|? f) { cbOpen = AppKitErrHandler.cur.wrapFn(f) }
 
 	** Callback when popup is closed.
-	Void onClose(|This|? f) { cbClose = AppKitErrHandler.instance.wrapFn(f) }
+	Void onClose(|This|? f) { cbClose = AppKitErrHandler.cur.wrapFn(f) }
 
 	** Wraps up event handling to use err handling
 	private Func onEvent(Str type, Bool useCapture, |Event e| handler) {

@@ -230,27 +230,27 @@ using dom::CssDim
 	** Callback when a key is pressed while Dialog is open, including
 	** events that where dispatched outside the dialog.
 	Void onKeyDown(|Event e|? newFn) {
-		cbKeyDown = AppKitErrHandler.instance.wrapFn(newFn)
+		cbKeyDown = AppKitErrHandler.cur.wrapFn(newFn)
 	}
 	
 	** Callback *before* dialog is opened.
 	Void onOpen(|This|? newFn) {
-		cbOpen = AppKitErrHandler.instance.wrapFn(newFn)
+		cbOpen = AppKitErrHandler.cur.wrapFn(newFn)
 	}
 
 	** Callback *after* dialog is opened.
 	Void onOpened(|This|? newFn) {
-		cbOpened = AppKitErrHandler.instance.wrapFn(newFn)
+		cbOpened = AppKitErrHandler.cur.wrapFn(newFn)
 	}
 
 	** Callback *before* dialog is closed.
 	Void onClose(|This|? newFn) {
-		cbClose = AppKitErrHandler.instance.wrapFn(newFn)
+		cbClose = AppKitErrHandler.cur.wrapFn(newFn)
 	}
 	
 	** Callback *after* dialog is closed.
 	Void onClosed(|This|? newFn) {
-		cbClosed = AppKitErrHandler.instance.wrapFn(newFn)
+		cbClosed = AppKitErrHandler.cur.wrapFn(newFn)
 		// this is actually unhelpful - but if ever needed, should be called addOnClosed()  
 //		oldFn := cbClosed
 //		cbClosed = oldFn == null ? newFn : |Modal th| { oldFn(th); newFn(th) }

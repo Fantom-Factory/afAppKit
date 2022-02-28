@@ -82,7 +82,7 @@ using dom::Style
 	}
 	
 	** Callback when 'enter' key is pressed.
-	Void onAction(|This|? f) { this.cbAction = AppKitErrHandler.instance.wrapFn(f) }
+	Void onAction(|This|? f) { this.cbAction = AppKitErrHandler.cur.wrapFn(f) }
 
 	internal Void fireAction(Event? e) { cbAction?.call(this) }
 	private Func? cbAction := null
