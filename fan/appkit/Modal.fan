@@ -5,6 +5,8 @@ using dom::Elem
 using dom::Event
 using dom::CssDim
 
+// TODO look at https://a11y-dialog.netlify.app/ and the new HTML5 <dialog> element
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog
 @Js class Modal {
 	Duration	transistionDur	:= 200ms
 	Str:Str		transitionFrom	:= Str:Str[
@@ -36,7 +38,7 @@ using dom::CssDim
 			else
 				cbKeyDown?.call(e)
 		}
-		
+
 		this.onEvent("click", false) |e| {
 			if (e.target == elem) {
 				// ignore background clicks on modals with Forms
@@ -192,7 +194,11 @@ using dom::CssDim
 		transitionFrom.each |val, prop| { elem.style[prop] = val }
 		elem.transition(transitionTo, ["transition-timing-function":"ease-out"], transistionDur) {
 			fireOnOpened	// this could return true to prevent the modal from showing...? meh.
-			elem.focus
+
+			// autofocus is for use with the new HTML5 <dialog> - so let's future proof our modals.
+			// https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autofocus
+			auto := elem.querySelector("[autofocus]")
+			(auto ?: elem).focus
 		}
 
 		isOpen = true
