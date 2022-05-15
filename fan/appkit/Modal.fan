@@ -197,7 +197,9 @@ using dom::CssDim
 
 			// autofocus is for use with the new HTML5 <dialog> - so let's future proof our modals.
 			// https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autofocus
-			auto := elem.querySelector("[autofocus]")
+			// But browsers trigger "autofocus" globally on page load, even if the elem is hidden, making it unusable in most cases!
+			// so fall back to [data-autofocus]
+			auto := elem.querySelector("[autofocus]") ?: elem.querySelector("[data-autofocus]")
 			(auto ?: elem).focus
 		}
 
