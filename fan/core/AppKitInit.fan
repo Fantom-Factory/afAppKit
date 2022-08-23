@@ -23,7 +23,7 @@ using graphics::GeomUtil
 
 		doc.querySelectorAll("[data-toggle='dropdown']").each |tog| {
 			btn := Button(tog)
-			dwn := findParent(tog, ".dropdown")
+			dwn := findParent(tog, ".dropdown") ?: throw Err("Could not find parent .dropdown from: ${tog.html}")
 			pop := Popup  (findImmediateChild(dwn, ".dropdown-popup"), true)	// true still allows null to be passed (and returned)
 			if (pop == null)
 				pop = Menu(findImmediateChild(dwn, ".dropdown-menu"), true)		// true still allows null to be passed (and returned)
