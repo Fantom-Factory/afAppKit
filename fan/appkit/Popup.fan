@@ -125,6 +125,12 @@ using graphics::Point
 		fitBounds
 		onBeforeOpen
 
+		// to counter the awful "page scrolls but dropdown stays fixed" bug - prevent the page from scrolling
+		// sometimes you want to scroll with the dropdown showing - but, meh, tough!
+		body.style.addClass("popup-open")
+		JsUtil.addScrollbarWidth(body, "padding-right")
+		body.style->overflowY = "hidden"
+
 		elem.transition([
 			"opacity": "1"
 		], null, 100ms) { elem.focus; fireOpen(null) }
@@ -146,6 +152,11 @@ using graphics::Point
 			
 			// remove all manual styling so menu may be re-used in mobile
 			elem.style.clear
+			
+			doc := Win.cur.doc
+			doc.body.style->overflowY = null
+			doc.body.style.removeClass("popup-open")
+			JsUtil.removeScrollbarWidth(doc.body, "padding-right")
 		}
 	}
 
