@@ -28,7 +28,7 @@ using dom::CssDim
 	
 	Elem elem { private set }
 	
-	private new _make(Elem elem) {
+	internal new _make(Elem elem) {
 		this.elem = elem
 		
 		this.onEvent("keydown", false) |e| {
@@ -52,17 +52,13 @@ using dom::CssDim
 			AppElem.onEvent(it, "click", false) { close }
 		}
 	}
-
-	static new fromSelector(Str? selector) {
-		elem := doc.querySelector(selector ?: "doesNotExist")
-		if (elem == null) throw Err("Could not find Modal: ${selector}")
-		return fromElem(elem)
+	
+	static new fromSelector(Str? selector, Bool checked := true) {
+		AppElem.fromSelector(selector, Modal#, checked)
 	}
-
-	static new fromElem(Elem elem) {
-		if (elem.prop(Modal#.qname) == null)
-			elem.setProp(Modal#.qname, Modal._make(elem))
-		return elem.prop(Modal#.qname)
+	
+	static new fromElem(Elem? elem, Bool checked := true) {
+		AppElem.fromElem(elem, Modal#, checked)
 	}
 	
 	static Modal createInfoDialog(Str title, Obj body) {
