@@ -23,7 +23,7 @@ using dom::CssDim
 		
 		// don't double up the padding when called multiple times
 		if (!elem.style.hasClass(className)) {
-			scrollbarWidth	:= JsUtil.getScrollbarWidth
+			scrollbarWidth	:= Env.cur.runtime == "js" ? JsUtil.getScrollbarWidth : 16f
 			parseFloat		:= |Str prop->Float| { CssDim(prop.trimToNull ?: "0px").val.toFloat }
 			oldProp 		:= parseFloat(elem.style.get(propName))
 			elem.setProp(className, oldProp)

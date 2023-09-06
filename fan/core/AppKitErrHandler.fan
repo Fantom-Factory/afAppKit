@@ -10,7 +10,7 @@ using concurrent::Actor
 	@Config Str?	clientErrTitle 	:= "Shazbot! The computer reported an error!"
 	@Config Str?	clientErrMsg	:= "Don't worry, it's not your fault - it's ours!\n\nRefresh the page and try again.".replace("\n", "<br>")
 	private	Func?	onErrFn
-	
+
 	new make(|This|? f := null) {
 		log				= this.typeof.pod.log
 
@@ -31,7 +31,7 @@ using concurrent::Actor
 		Actor.locals["afAppKit.errHandler"] = this
 	}
 
-	static AppKitErrHandler cur() {
+	static AppKitErrHandler? cur() {
 		Actor.locals["afAppKit.errHandler"]
 	}
 

@@ -12,14 +12,25 @@ using dom::Win
 			config	:= Pickle.readObj(configStr)
 			iocObjs	:= iocObjs
 			doInit(appType, iocObjs, config)
+
 		} catch (Err cause) {
-			// don't bother with ErrHandler during init - it's too much chicken + egg
-			log.err("Could not initialise AppKit page", cause)
+			// tests *may* have already set this up
+			if (AppKitErrHandler.cur != null)
+				AppKitErrHandler.cur.onError(cause)
+			else
+				// don't bother with ErrHandler during init - it's too much chicken + egg
+				log.err("Could not initialise AppKit page", cause)
 		}
 	}
 
 	** Hook to pre-configure the IoC with ready-made objects.
-	virtual Type:Obj iocObjs() { Type:Obj?[:] }
+	virtual Type:Obj iocObjs() {
+		objs := Type:Obj?[:]
+		// keep any err-handling set by tests
+		if (AppKitErrHandler.cur != null)
+			objs[AppKitErrHandler#] = AppKitErrHandler.cur
+		return objs
+	}
 
 	@NoDoc
 	MiniIoc doInit(Type appType, Type:Obj iocObjs, Str:Obj? config) {
