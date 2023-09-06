@@ -14,12 +14,11 @@ using dom::Win
 			doInit(appType, iocObjs, config)
 
 		} catch (Err cause) {
-			// tests *may* have already set this up
-			if (AppKitErrHandler.cur != null)
-				AppKitErrHandler.cur.onError(cause)
-			else
-				// don't bother with ErrHandler during init - it's too much chicken + egg
-				log.err("Could not initialise AppKit page", cause)
+			// don't bother with ErrHandler during init - it's too much chicken + egg
+			log.err("Could not initialise AppKit page", cause)
+			
+			// re-throw to ensure tests still fail
+			throw cause
 		}
 	}
 
